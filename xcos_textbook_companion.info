@@ -1,0 +1,6 @@
+name = Xcos Textbook Companion
+description = IIT Bombay Xcos Textbook Companion project
+package = IITB
+version = 7.1
+core = 7.x
+project = "xcos_textbook_companion"
