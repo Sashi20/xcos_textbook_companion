@@ -1254,9 +1254,7 @@ Publisher and Place: ' . $preference1_data->publisher . '
 Edition: ' . $preference1_data->edition . '
 Year of publication: ' . $preference1_data->year . '
 
-To know how to upload the Xcos examples, see https://scilab.in/xcos-textbook-companion/procedure
-
-To check the coding guidelines: https://scilab.in/xcos-textbook-companion/coding-guidelines
+Click on the link given below for the further procedure: https://scilab.in/xcos-textbook-companion/procedure
 
 Please contact us by sending an email to textbook@scilab.in in case you wish to cancel this book proposal.
 
@@ -2531,6 +2529,7 @@ function _list_of_xcos_book_dependency_files()
 		'year'
 	));
 	$query->leftJoin('xcos_textbook_companion_preference', 'tcp', 'tcdp.preference_id = tcp.id');
+	$query->orderBy('tcdp.id', 'DESC');
 	$book_dependency_files_q = $query->execute();
 	while ($book_dependency_files_data = $book_dependency_files_q->fetchObject())
 	{

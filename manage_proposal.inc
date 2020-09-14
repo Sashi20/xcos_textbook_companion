@@ -261,7 +261,7 @@ function proposal_approval_form($form, &$form_state)
         '#markup' => $row->mobile,
         '#title' => t('Mobile')
     );
-    $form['how_project'] = array(
+    /*$form['how_project'] = array(
         '#type' => 'item',
         '#markup' => $row->how_project,
         '#title' => t('How did you come to know about this project')
@@ -270,7 +270,7 @@ function proposal_approval_form($form, &$form_state)
         '#type' => 'item',
         '#markup' => $row->course,
         '#title' => t('Course')
-    );
+    );*/
     $form['branch'] = array(
         '#type' => 'item',
         '#markup' => $row->branch,
@@ -340,7 +340,7 @@ function proposal_approval_form($form, &$form_state)
         '#markup' => $row->scilab_version,
         '#title' => t('Scilab Version')
     );
-    $form['reference'] = array(
+    /*$form['reference'] = array(
         '#type' => 'item',
         '#markup' => $row->reference,
         '#title' => t('References')
@@ -349,7 +349,7 @@ function proposal_approval_form($form, &$form_state)
         '#type' => 'item',
         '#markup' => $row->reason,
         '#title' => t('Reasons')
-    );
+    );*/
     /* get book preference */
     $preference_rows = array();
     /*$preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d ORDER BY pref_number ASC", $proposal_id);*/

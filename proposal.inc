@@ -320,12 +320,15 @@ function book_proposal_form($form, &$form_state)
 		'#maxlength' => 50
 	);
 	$form['version'] = array(
-		'#type' => 'textfield',
+		'#type' => 'select',
 		'#title' => t('Scilab Version'),
-		'#description' => t('Input version format should be like 5.4 or 5.4.1'),
-		'#size' => 10,
+		'#options' => array(
+			'Scilab 6.1.0' => 'Scilab 6.1.0',
+		),
 		'#required' => TRUE,
-		'#maxlength' => 20
+		//'#description' => t('Input version format should be like 5.4 or 5.4.1'),
+		/*'#size' => 10,
+		'#maxlength' => 20*/
 	);
 	$form['expected_date_of_completion'] = array(
 		'#type' => 'date_popup',
@@ -341,11 +344,16 @@ function book_proposal_form($form, &$form_state)
 		'#required' => TRUE
 	);
 	$form['operating_system'] = array(
-		'#type' => 'textfield',
+		'#type' => 'select',
 		'#title' => t('Operating System'),
+		'#options' => array(
+			'Windows 32/64-bit Vista/7/8/10' => 'Windows 32/64-bit Vista/7/8/10',
+			'Linux 32/64-bit x86 Ubuntu 16.04 or above' => 'Linux 32/64-bit x86 Ubuntu 16.04 or above',
+			'MacOS 10.7 (OS X Lion) or newer' => 'MacOS 10.7 (OS X Lion) or newer'
+		),
 		'#required' => TRUE,
-		'#size' => 30,
-		'#maxlength' => 50
+		/*'#size' => 30,
+		'#maxlength' => 50*/
 	);
 	/***************************************************************************/
 	$form['tbc_title_list'] = array(
@@ -529,7 +537,7 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 		}
 	}*/ //isset($_POST['reason'])
 	/************************************/
-	$scilab_version = 'scilab ' . $form_state['values']['version'];
+	$scilab_version = $form_state['values']['version'];
 	$query = "
 INSERT INTO {xcos_textbook_companion_proposal}
     (uid, approver_uid, full_name, mobile, gender, how_project, branch, university, country, city, pincode, state, faculty, reviewer, reference, completion_date ,creation_date, approval_date, proposal_status, message, scilab_version, operating_system, teacher_email, proposal_type, reason, samplefilepath, proposed_completion_date) VALUES (:uid, :approver_uid, :full_name, :mobile, :gender, :how_project, :branch, :university, :country, :city, :pincode, :state,
@@ -559,7 +567,7 @@ INSERT INTO {xcos_textbook_companion_proposal}
 		":proposal_status" => 0,
 		":message" => 'None',
 		":scilab_version" => $scilab_version,
-		":operating_system" => _tbc_sentence_case($form_state['values']['operating_system']),
+		":operating_system" => $form_state['values']['operating_system'],
 		":teacher_email" => $form_state['values']['faculty_email'],
 		":proposal_type" => $scilab_proposal_data->proposal_type,
 		":reason" => $scilab_proposal_data->reason,

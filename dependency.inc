@@ -321,7 +321,8 @@ function _list_existing_dependency($book_id)
 	{
 		$item = array(
 			l($row->filename . $temp_caption, 'xcos-textbook-companion/download/dependency/' . $row->id),
-			l("Edit", 'xcos-textbook-companion/code/edit-dep/' . $row->id) . " | " . l("Delete", "xcos-textbook-companion/code/delete-dep/{$row->id}")
+			l("Delete", "xcos-textbook-companion/code/delete-dep/{$row->id}")
+			//l("Edit", 'xcos-textbook-companion/code/edit-dep/' . $row->id) . " | " . l("Delete", "xcos-textbook-companion/code/delete-dep/{$row->id}")
 		);
 		array_push($rows, $item);
 	} //$row = $result->fetchObject()

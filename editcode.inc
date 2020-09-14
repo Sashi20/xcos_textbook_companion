@@ -193,6 +193,15 @@ function upload_examples_edit_form($form, &$form_state)
 		'#prefix' => '<div style="color:red">',
 		'#suffix' => '</div>'
 	);
+	$form['source_file_action'] = array(
+			'#type' => 'radios',
+			'#options' => array(
+				'1' => "Replace Existing Main or Source File<br>",
+				'2' => "Delete Existing Main or Source File"
+			),
+			'#title' => t('Select Action'),
+			'#required' => TRUE
+		);
 	$form['sourcefile'] = array(
 		'#type' => 'fieldset',
 		'#title' => t('Main or Source Files'),
@@ -210,15 +219,6 @@ function upload_examples_edit_form($form, &$form_state)
 			'#type' => 'item',
 			'#title' => t('Note:'),
 			'#markup' => t("<Strong style='color:red' >Use Replace option to upload your corrected code. Do not delete the example if your book is under review, you can always edit and upload it by the Replace option.</strong>")
-		);
-		$form['sourcefile']['source_file_action'] = array(
-			'#type' => 'radios',
-			'#options' => array(
-				'1' => "Replace Existing Main or Source File<br>",
-				'2' => "Delete Existing Main or Source File"
-			),
-			'#title' => t('Select Action'),
-			'#required' => TRUE
 		);
 		$form['sourcefile']['sourcefile1'] = array(
 			'#type' => 'file',
@@ -274,6 +274,7 @@ function upload_examples_edit_form($form, &$form_state)
 	{
 		$dependency_files[] = $dependency_data->dependency_id;
 	} //$dependency_data = $dependency_q->fetchObject()
+	//var_dump($dependency_files);die;
 	/* existing dependencies */
 	$form['existing_depfile'] = array(
 		'#type' => 'fieldset',
@@ -495,12 +496,12 @@ function upload_examples_edit_form_validate($form, &$form_state)
 	/* add javascript again for automatic book title, check if example uploaded, dependency selection effects */
 	$chapter_name_js = " $(document).ready(function() {
     $('#edit-number').change(function() {
-      $.get('" . base_path() . "xcos_textbook_companion/ajax/chapter_title/' + $('#edit-number').val() + '/' + " . $row->pre_id . ", function(data) {
+      $.get('" . base_path() . "xcos-textbook-companion/ajax/chapter_title/' + $('#edit-number').val() + '/' + " . $row->pre_id . ", function(data) {
         $('#edit-name').val(data);
       });
     });
     $('#edit-example-number').change(function() {
-      $.get('" . base_path() . "xcos_textbook_companion/ajax/example_exists/' + $('#edit-number').val() + '/' + $('#edit-example-number').val(), function(data) {
+      $.get('" . base_path() . "xcos-textbook-companion/ajax/example_exists/' + $('#edit-number').val() + '/' + $('#edit-example-number').val(), function(data) {
         if (data) {
           alert(data);
         }
@@ -677,7 +678,7 @@ function upload_examples_edit_form_submit($form, &$form_state)
 		} //!$file_data
 		if (($form_state['values']['source_file_action'] == 2) && (!$_FILES['files']['name']['sourcefile1']))
 		{
-			if (!delete_file($cur_file_id))
+			if (!xcos_delete_file($cur_file_id))
 			{
 				drupal_set_message("Error deleting example source file.", 'error');
 				return;
@@ -688,7 +689,7 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	{
 		if ($cur_file_id > 0)
 		{
-			if (!delete_file($cur_file_id))
+			if (!xcos_delete_file($cur_file_id))
 			{
 				drupal_set_message("Error removing previous example source file.", 'error');
 				return;
@@ -762,7 +763,7 @@ function upload_examples_edit_form_submit($form, &$form_state)
 		} //!$file_data
 		if (($form_state['values']['cur_result1_checkbox'] == 1) && (!$_FILES['files']['name']['result1']))
 		{
-			if (!delete_file($cur_file_id))
+			if (!xcos_delete_file($cur_file_id))
 			{
 				drupal_set_message("Error deleting example result 1 file.", 'error');
 				return;
@@ -773,7 +774,7 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	{
 		if ($cur_file_id > 0)
 		{
-			if (!delete_file($cur_file_id))
+			if (!xcos_delete_file($cur_file_id))
 			{
 				drupal_set_message("Error removing previous example result 1 file.", 'error');
 				return;
@@ -839,7 +840,7 @@ function upload_examples_edit_form_submit($form, &$form_state)
 		} //!$file_data
 		if (($form_state['values']['cur_result2_checkbox'] == 1) && (!$_FILES['files']['name']['result2']))
 		{
-			if (!delete_file($cur_file_id))
+			if (!xcos_delete_file($cur_file_id))
 			{
 				drupal_set_message("Error deleting example result 2 file.", 'error');
 				return;
@@ -850,7 +851,7 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	{
 		if ($cur_file_id > 0)
 		{
-			if (!delete_file($cur_file_id))
+			if (!xcos_delete_file($cur_file_id))
 			{
 				drupal_set_message("Error removing previous example result 2 file.", 'error');
 				return;
@@ -917,7 +918,7 @@ function upload_examples_edit_form_submit($form, &$form_state)
 		} //!$file_data
 		if (($form_state['values']['cur_result2_checkbox'] == 1) && (!$_FILES['files']['name']['result2']))
 		{
-			if (!delete_file($cur_file_id))
+			if (!xcos_delete_file($cur_file_id))
 			{
 				drupal_set_message("Error deleting example result 3 file.", 'error');
 				return;
@@ -928,7 +929,7 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	{
 		if ($cur_file_id > 0)
 		{
-			if (!delete_file($cur_file_id))
+			if (!xcos_delete_file($cur_file_id))
 			{
 				drupal_set_message("Error removing previous example result 3 file.", 'error');
 				return;
