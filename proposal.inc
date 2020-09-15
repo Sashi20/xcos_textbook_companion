@@ -146,7 +146,7 @@ function book_proposal_form($form, &$form_state)
 	);
 	$form['university'] = array(
 		'#type' => 'textfield',
-		'#title' => t('University/Institute'),
+		'#title' => t('Institution/Organisation name'),
 		'#size' => 30,
 		'#maxlength' => 50,
 		'#required' => TRUE

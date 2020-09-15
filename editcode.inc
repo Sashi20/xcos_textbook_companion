@@ -193,15 +193,20 @@ function upload_examples_edit_form($form, &$form_state)
 		'#prefix' => '<div style="color:red">',
 		'#suffix' => '</div>'
 	);
-	$form['source_file_action'] = array(
+	/*$form['source_file_action'] = array(
 			'#type' => 'radios',
 			'#options' => array(
 				'1' => "Replace Existing Main or Source File<br>",
 				'2' => "Delete Existing Main or Source File"
 			),
 			'#title' => t('Select Action'),
-			'#required' => TRUE
+			//'#required' => TRUE
 		);
+	$form['source_file_action_note'] = array(
+			'#type' => 'item',
+			'#title' => t('Note:'),
+			'#markup' => t("<Strong style='color:red' >Use Replace option to upload your corrected code. Do not delete the example if your book is under review, you can always edit and upload it by the Replace option.</strong>")
+		);*/
 	$form['sourcefile'] = array(
 		'#type' => 'fieldset',
 		'#title' => t('Main or Source Files'),
@@ -219,6 +224,15 @@ function upload_examples_edit_form($form, &$form_state)
 			'#type' => 'item',
 			'#title' => t('Note:'),
 			'#markup' => t("<Strong style='color:red' >Use Replace option to upload your corrected code. Do not delete the example if your book is under review, you can always edit and upload it by the Replace option.</strong>")
+		);
+		$form['sourcefile']['source_file_action'] = array(
+			'#type' => 'radios',
+			'#options' => array(
+				'1' => "Replace Existing Main or Source File<br>",
+				'2' => "Delete Existing Main or Source File"
+			),
+			'#title' => t('Select Action'),
+			//'#required' => TRUE
 		);
 		$form['sourcefile']['sourcefile1'] = array(
 			'#type' => 'file',
@@ -308,11 +322,11 @@ function upload_examples_edit_form($form, &$form_state)
 	'#default_value' => $dependency_files,
 	);*/
 	/* existing dependencies */
-	$form['existing_depfile']['selected'] = array(
+	/*$form['existing_depfile']['selected'] = array(
 		'#type' => 'item',
 		'#title' => t('Existing Dependency Files Selected'),
 		'#markup' => '<div id="existing_depfile_selected"></div>'
-	);
+	);*/
 	/* $form['existing_depfile']['dep_book_title'] = array(
 	'#type' => 'select',
 	'#title' => t('Title of the Book'),
@@ -322,7 +336,8 @@ function upload_examples_edit_form($form, &$form_state)
 		'#type' => 'item',
 		'#title' => t('Dependency Files')
 	);
-	list($files_options, $files_options_class) = _list_of_xcos_book_dependency_files();
+	list($files_options, $files_options_class) = _list_of_xcos_book_dependency_files_edit($example_data->id);
+	//var_dump($files_options_class);die;
 	$form['existing_depfile']['dep_chapter_example_files'] = array(
 		'#type' => 'checkboxes',
 		//'#title' => t('Dependency Files'),
@@ -330,7 +345,8 @@ function upload_examples_edit_form($form, &$form_state)
 		'#options_class' => $files_options_class,
 		'#prefix' => '<div id="ckb" style="height:500px;overflow:auto;">',
 		'#suffix' => '</div>',
-		'#multiple' => TRUE
+		'#multiple' => TRUE,
+		'#default_value' =>  $files_options_class
 	);
 	$form['existing_depfile']['dep_upload'] = array(
 		'#type' => 'item',
@@ -452,6 +468,49 @@ function upload_examples_edit_form($form, &$form_state)
 		'#value' => l(t('Cancel'), 'xcos-textbook-companion/code')
 	);
 	return $form;
+}
+function _list_of_xcos_book_dependency_files_edit($example_id)
+{
+	global $user;
+	$book_dependency_files = array();
+	$book_dependency_files_class = array();
+	$query = db_select('xcos_textbook_companion_dependency_files', 'tcdp');
+	$query->fields('tcdp');
+	$query->fields('tcp', array(
+		'book',
+		'author',
+		'publisher',
+		'edition',
+		'year'
+	));
+	$query->leftJoin('xcos_textbook_companion_preference', 'tcp', 'tcdp.preference_id = tcp.id');
+	$query->orderBy('tcdp.id', 'DESC');
+	$book_dependency_files_q = $query->execute();
+	while ($book_dependency_files_data = $book_dependency_files_q->fetchObject())
+	{
+		$temp_caption = '';
+		if ($book_dependency_files_data->caption)
+			$temp_caption .= ' ===>[Caption: ' . $book_dependency_files_data->caption . ' ' . ', Book: ' . $book_dependency_files_data->book . ', Author: ' . $book_dependency_files_data->author . ', Publisher: ' . $book_dependency_files_data->publisher . ', Edition: ' . $book_dependency_files_data->edition . ', Year: ' . $book_dependency_files_data->year . ']';
+		$book_dependency_files[$book_dependency_files_data->id] = l($book_dependency_files_data->filename, 'xcos-textbook-companion/download/dependency/' . $book_dependency_files_data->id, array(
+			'attributes' => array(
+				'class' => 'title'
+			)
+		)) . $temp_caption;
+			//$book_dependency_files_class[$book_dependency_files_data->id] = $book_dependency_files_data->preference_id;
+		} //$book_dependency_files_data->caption //$book_dependency_files_data = $book_dependency_files_q->fetchObject()
+	$query = db_select('xcos_textbook_companion_example_dependency');
+	$query->fields('xcos_textbook_companion_example_dependency');
+	$query->condition('example_id', $example_id);
+	$book_dep_q = $query->execute();
+	while($existing_dep_data = $book_dep_q->fetchObject())
+	{
+		$book_dependency_files_class[$existing_dep_data->id] = $existing_dep_data->dependency_id;
+	}
+
+	return array(
+		$book_dependency_files,
+		$book_dependency_files_class
+	);
 }
 function upload_examples_edit_form_validate($form, &$form_state)
 {
@@ -983,7 +1042,7 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	$param['example_updated']['user_id'] = $user->uid;
 	if (!drupal_mail('xcos_textbook_companion', 'example_updated', $email_to, language_default(), $param, variable_get('xcos_textbook_companion_from_email', NULL), TRUE))
 		drupal_set_message('Error sending email message.', 'error');
-	drupal_set_message(t("Example successfully udpated."), 'status');
+	drupal_set_message(t("Example successfully updated."), 'status');
 }
 /******************************************************************************/
 /**************************** EDIT CHAPTER TITLE ******************************/

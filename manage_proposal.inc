@@ -957,21 +957,7 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
         '#required' => TRUE,
         '#default_value' => $proposal_data->how_project
     );
-    $form['course'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Course'),
-        '#size' => 30,
-        '#maxlength' => 50,
-        '#required' => TRUE,
-        '#default_value' => $proposal_data->course
-    );
-    $form['branch'] = array(
-        '#type' => 'select',
-        '#title' => t('Department/Branch'),
-        '#options' => _list_of_departments(),
-        '#required' => TRUE,
-        '#default_value' => $proposal_data->branch
-    );
+    
     $form['university'] = array(
         '#type' => 'textfield',
         '#title' => t('University/ Institute'),
