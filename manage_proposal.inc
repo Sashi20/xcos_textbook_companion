@@ -1310,8 +1310,8 @@ function proposal_edit_form_validate($form, &$form_state)
     if ($form_state['values']['book1'] && $form_state['values']['author1']) {
         $bk1 = trim($form_state['values']['book1']);
         $auth1 = trim($form_state['values']['author1']);
-        if (_dir_name($bk1, $auth1, $form_state['values']['hidden_preference_id1']) != NULL) {
-            $form_state['values']['dir_name1'] = _dir_name($bk1, $auth1, $form_state['values']['hidden_preference_id1']);
+        if (_xcos_dir_name($bk1, $auth1, $form_state['values']['hidden_preference_id1']) != NULL) {
+            $form_state['values']['dir_name1'] = _xcos_dir_name($bk1, $auth1, $form_state['values']['hidden_preference_id1']);
         }
     }
     /*if ($form_state['values']['book2'] && $form_state['values']['author2'])
@@ -1319,9 +1319,9 @@ function proposal_edit_form_validate($form, &$form_state)
     $bk2 = trim($form_state['values']['book2']);
     $auth2 = trim($form_state['values']['author2']);
     
-    if (_dir_name($bk2, $auth2, $form_state['values']['hidden_preference_id2']) != NULL)
+    if (_xcos_dir_name($bk2, $auth2, $form_state['values']['hidden_preference_id2']) != NULL)
     {
-    $form_state['values']['dir_name2'] = _dir_name($bk2, $auth2, $form_state['values']['hidden_preference_id2']);
+    $form_state['values']['dir_name2'] = _xcos_dir_name($bk2, $auth2, $form_state['values']['hidden_preference_id2']);
     }
     }
     if ($form_state['values']['book3'] && $form_state['values']['author3'])
@@ -1329,9 +1329,9 @@ function proposal_edit_form_validate($form, &$form_state)
     $bk3 = trim($form_state['values']['book3']);
     $auth3 = trim($form_state['values']['author3']);
     
-    if (_dir_name($bk3, $auth3, $form_state['values']['hidden_preference_id3']) != NULL)
+    if (_xcos_dir_name($bk3, $auth3, $form_state['values']['hidden_preference_id3']) != NULL)
     {
-    $form_state['values']['dir_name3'] = _dir_name($bk3, $auth3, $form_state['values']['hidden_preference_id3']);
+    $form_state['values']['dir_name3'] = _xcos_dir_name($bk3, $auth3, $form_state['values']['hidden_preference_id3']);
     }
     }
     /* mobile */

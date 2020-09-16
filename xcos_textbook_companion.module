@@ -2410,7 +2410,7 @@ function ucname($string)
 	} //array( '-', '\'' ) as $delimiter
 	return $string;
 }
-function _dir_name($book, $author, $pref_id)
+function _xcos_dir_name($book, $author, $pref_id)
 {
 	if (!$pref_id)
 	{
