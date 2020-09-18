@@ -159,11 +159,11 @@ $form['book_details']['pref_id'] = array(
 		'#tree' => TRUE
 	);
 	/* existing dependencies */
-	$form['existing_depfile']['selected'] = array(
+	/*$form['existing_depfile']['selected'] = array(
 		'#type' => 'item',
 		'#title' => t('Existing Dependency Files Selected'),
 		'#markup' => '<div id="existing_depfile_selected"></div>'
-	);
+	);*/
 	/* $form['existing_depfile']['dep_book_title'] = array(
 	'#type' => 'select',
 	'#title' => t('Title of the Book'),

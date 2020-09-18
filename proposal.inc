@@ -334,7 +334,7 @@ function book_proposal_form($form, &$form_state)
 		'#type' => 'date_popup',
 		'#title' => t('Expected Date of Completion'),
 		'#date_label_position' => '',
-		'#description' => '<span style="color:red">Please select a date within September 25, 2020</span>',
+		'#description' => '<span style="color:red">Please select a date within September 27, 2020</span>',
 		'#default_value' => '',
 		'#date_format' => 'd-m-Y',
 		//'#date_increment' => 0,
@@ -436,9 +436,9 @@ function book_proposal_form_validate($form, &$form_state)
 	$m = (int) $m;
 	$y = (int) $y;
 	$completion_date = strtotime($form_state['values']['expected_date_of_completion']);
-	$last_date = strtotime("25-09-2020");
+	$last_date = strtotime("27-09-2020");
 	if ($completion_date > $last_date)
-		form_set_error('expected_date_of_completion', t('Please select a date within September 25, 2020'));
+		form_set_error('expected_date_of_completion', t('Please select a date within September 27, 2020'));
 	if ($form_state['values']['country'] == 'Others')
 	{
 		if ($form_state['values']['other_country'] == '')
