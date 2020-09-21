@@ -1123,7 +1123,6 @@ This is to inform you that we have received your proposal for Xcos Textbook Comp
 Full Name: ' . $proposal_data->full_name . '
 Email: ' . $user_data->mail . '
 Mobile: ' . $proposal_data->mobile . '
-Course: ' . $proposal_data->course . '
 Department/Branch: ' . $proposal_data->branch . '
 University/Institute: ' . $proposal_data->university . '
 City: ' . $proposal_data->city . '
@@ -1227,7 +1226,6 @@ Your following book proposal has been approved:
 Full Name: ' . $proposal_data->full_name . '
 Email: ' . $user_data->mail . '
 Mobile: ' . $proposal_data->mobile . '
-Course: ' . $proposal_data->course . '
 Department/Branch: ' . $proposal_data->branch . '
 University/Institute: ' . $proposal_data->university . '
 City: ' . $proposal_data->city . '
@@ -1288,7 +1286,6 @@ The textbook companion on the following book has been completed successfully by 
 Full Name: ' . $proposal_data->full_name . '
 Email: ' . $user_data->mail . '
 Mobile: ' . $proposal_data->mobile . '
-Course: ' . $proposal_data->course . '
 Department/Branch: ' . $proposal_data->branch . '
 University/Institute: ' . $proposal_data->university . '
 College Teacher / Professor: ' . $proposal_data->faculty . '
@@ -1347,7 +1344,6 @@ You have submitted codes for all examples:
 Full Name: ' . $proposal_data->full_name . '
 Email: ' . $user_data->mail . '
 Mobile: ' . $proposal_data->mobile . '
-Course: ' . $proposal_data->course . '
 Department/Branch: ' . $proposal_data->branch . '
 University/Institute: ' . $proposal_data->university . '
 College Teacher / Professor: ' . $proposal_data->faculty . '
@@ -1406,7 +1402,6 @@ Your interface for code submission has been enabled by the reviewer, you can now
 Full Name: ' . $proposal_data->full_name . '
 Email: ' . $user_data->mail . '
 Mobile: ' . $proposal_data->mobile . '
-Course: ' . $proposal_data->course . '
 Department/Branch: ' . $proposal_data->branch . '
 University/Institute: ' . $proposal_data->university . '
 College Teacher / Professor: ' . $proposal_data->faculty . '
@@ -2334,19 +2329,6 @@ function _list_of_software_version()
 		$software_version[$software_version_list_data->r_version] = $software_version_list_data->r_version;
 	} //$software_version_list_data = $software_version_list->fetchObject()
 	return $software_version;
-}
-function _xcos_tbc_list_of_courses()
-{
-	$courses = array();
-	$query = db_select('list_of_courses');
-	$query->fields('list_of_courses');
-	//$query->orderBy('id', 'DESC');
-	$courses_list = $query->execute();
-	while ($courses_list_data = $courses_list->fetchObject())
-	{
-		$courses[$courses_list_data->course] = $courses_list_data->course;
-	} //$courses_list_data = $department_list->fetchObject()
-	return $courses;
 }
 function _xcos_tbc_list_of_departments()
 {
