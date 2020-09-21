@@ -261,16 +261,6 @@ function proposal_approval_form($form, &$form_state)
         '#markup' => $row->mobile,
         '#title' => t('Mobile')
     );
-    /*$form['how_project'] = array(
-        '#type' => 'item',
-        '#markup' => $row->how_project,
-        '#title' => t('How did you come to know about this project')
-    );
-    $form['course'] = array(
-        '#type' => 'item',
-        '#markup' => $row->course,
-        '#title' => t('Course')
-    );*/
     $form['branch'] = array(
         '#type' => 'item',
         '#markup' => $row->branch,
@@ -603,11 +593,6 @@ function proposal_status_form($from, $form_state)
         '#type' => 'item',
         '#markup' => $proposal_data->how_project,
         '#title' => t('How did you come to know about this project')
-    );
-    $form['course'] = array(
-        '#type' => 'item',
-        '#markup' => $proposal_data->course,
-        '#title' => t('Course')
     );
     $form['branch'] = array(
         '#type' => 'item',
@@ -1386,7 +1371,6 @@ function proposal_edit_form_submit($form, &$form_state)
         'full_name' => $form_state['values']['full_name'],
         'mobile' => $form_state['values']['mobile'],
         'how_project' => $form_state['values']['how_project'],
-        'course' => $form_state['values']['course'],
         'branch' => $form_state['values']['branch'],
         'university' => $form_state['values']['university'],
         'city' => $form_state['values']['city'],
@@ -1845,7 +1829,7 @@ function _failed_all($preference_id = 0, $confirm = "")
 /*function CreateReadmeFileTextbookCompanion($proposal_id)
 {
     $result = db_query("
-                       SELECT  tcc.id AS proposal_id,tcc.full_name, tcc.course, tcc.branch, tcc.university, tcp.id as pref_id, tcp.directory_name, tcp.* FROM xcos_textbook_companion_preference tcp JOIN xcos_textbook_companion_proposal tcc ON tcp.proposal_id= tcc.id WHERE  tcc.proposal_status = 3 AND tcp.approval_status = 1 AND tcc.id = :proposal_id
+                       SELECT  tcc.id AS proposal_id,tcc.full_name, tcc.branch, tcc.university, tcp.id as pref_id, tcp.directory_name, tcp.* FROM xcos_textbook_companion_preference tcp JOIN xcos_textbook_companion_proposal tcc ON tcp.proposal_id= tcc.id WHERE  tcc.proposal_status = 3 AND tcp.approval_status = 1 AND tcc.id = :proposal_id
                        ", array(
         ":proposal_id" => $proposal_id
     ));
@@ -1855,7 +1839,6 @@ function _failed_all($preference_id = 0, $confirm = "")
     $txt = "";
     $txt .= "About The Contributor" . "\n\n";
     $txt .= "Contributed By: " . ucwords(strtolower($proposal_data->full_name)) . "\n";
-    $txt .= "Course: " . ucwords(strtolower($proposal_data->course)) . "\n";
     $txt .= "Branch: " . ucwords(strtolower($proposal_data->branch)) . "\n";
     $txt .= "College/Institute/Organization: " . ucwords(strtolower($proposal_data->university)) . "\n\n";
     $txt .= "About The Book" . "\n\n";

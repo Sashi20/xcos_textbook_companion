@@ -485,7 +485,7 @@ function _book_information($preference_id)
 {
     /*$book_data = db_fetch_object(db_query("SELECT
     preference.book as preference_book, preference.author as preference_author, preference.isbn as preference_isbn, preference.publisher as preference_publisher, preference.edition as preference_edition, preference.year as preference_year,
-    proposal.full_name as proposal_full_name, proposal.faculty as proposal_faculty, proposal.reviewer as proposal_reviewer, proposal.course as proposal_course, proposal.branch as proposal_branch, proposal.university as proposal_university
+    proposal.full_name as proposal_full_name, proposal.faculty as proposal_faculty, proposal.reviewer as proposal_reviewer, proposal.branch as proposal_branch, proposal.university as proposal_university
     FROM {xcos_textbook_companion_proposal} proposal LEFT JOIN {xcos_textbook_companion_preference} preference ON proposal.id = preference.proposal_id WHERE preference.id = %d", $preference_id));*/
     $query = db_select('xcos_textbook_companion_proposal', 'proposal');
     $query->fields('preference', array(
@@ -500,7 +500,6 @@ function _book_information($preference_id)
         'full_name',
         'faculty',
         'reviewer',
-        'course',
         'branch',
         'university'
     ));
@@ -525,14 +524,12 @@ function _html_book_info($preference_id)
     $query->addField('proposal', 'full_name', 'proposal_full_name');
     $query->addField('proposal', 'faculty', 'proposal_faculty');
     $query->addField('proposal', 'reviewer', 'proposal_reviewer');
-    $query->addField('proposal', 'course', 'proposal_course');
     $query->addField('proposal', 'branch', 'proposal_branch');
     $query->addField('proposal', 'university', 'proposal_university');
     $query->fields('proposal', array(
         'full_name',
         'faculty',
         'reviewer',
-        'course',
         'branch',
         'university'
     ));
@@ -549,7 +546,7 @@ function _html_book_info($preference_id)
     $book_details = $query->execute()->fetchObject();
     $html_data = '';
     if ($book_details) {
-        $html_data = '<table cellspacing="1" cellpadding="1" border="0" style="width: 100%;" valign="top">' . '<tr><td style="width: 35%;"><span style="color: rgb(128, 0, 0);"><strong>About the Book</strong></span></td><td style="width: 35%;"><span style="color: rgb(128, 0, 0);"><strong>About the Contributor</strong></span></td>' . '<tr><td valign="top"><ul>' . '<li><strong>Author:</strong> ' . $book_details->preference_author . '</li>' . '<li><strong>Title of the Book:</strong> ' . $book_details->preference_book . '</li>' . '<li><strong>Publisher:</strong> ' . $book_details->preference_publisher . '</li>' . '<li><strong>Year:</strong> ' . $book_details->preference_year . '</li>' . '<li><strong>Edition:</strong> ' . $book_details->preference_edition . '</li>' . '</ul></td><td valign="top"><ul>' . '<li><strong>Contributor Name: </strong>' . $book_details->proposal_full_name . ', ' . $book_details->proposal_course . ', ' . $book_details->proposal_branch . ', ' . $book_details->proposal_university . '</li>' . '<li><strong>Reviewer: </strong>' . $book_details->proposal_reviewer . '</li>' . '</ul></td></tr>' . '</table>';
+        $html_data = '<table cellspacing="1" cellpadding="1" border="0" style="width: 100%;" valign="top">' . '<tr><td style="width: 35%;"><span style="color: rgb(128, 0, 0);"><strong>About the Book</strong></span></td><td style="width: 35%;"><span style="color: rgb(128, 0, 0);"><strong>About the Contributor</strong></span></td>' . '<tr><td valign="top"><ul>' . '<li><strong>Author:</strong> ' . $book_details->preference_author . '</li>' . '<li><strong>Title of the Book:</strong> ' . $book_details->preference_book . '</li>' . '<li><strong>Publisher:</strong> ' . $book_details->preference_publisher . '</li>' . '<li><strong>Year:</strong> ' . $book_details->preference_year . '</li>' . '<li><strong>Edition:</strong> ' . $book_details->preference_edition . '</li>' . '</ul></td><td valign="top"><ul>' . '<li><strong>Contributor Name: </strong>' . $book_details->proposal_full_name . ', ' . $book_details->proposal_branch . ', ' . $book_details->proposal_university . '</li>' . '<li><strong>Reviewer: </strong>' . $book_details->proposal_reviewer . '</li>' . '</ul></td></tr>' . '</table>';
     }
     return $html_data;
 }
