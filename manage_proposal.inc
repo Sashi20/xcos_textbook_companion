@@ -1314,7 +1314,7 @@ function proposal_edit_form_submit($form, &$form_state)
         //'city' => $form_state['values']['city'],
         //'pincode' => $form_state['values']['pincode'],
         //'state' => $form_state['values']['all_state'],
-        'faculty' => $form_state['values']['faculty'],
+        //'faculty' => $form_state['values']['faculty'],
         'reviewer' => $form_state['values']['reviewer'],
         //'completion_date' => $completion_date_timestamp,
         'operating_system' => $form_state['values']['operating_system'],
