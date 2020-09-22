@@ -589,11 +589,6 @@ function proposal_status_form($from, $form_state)
         '#markup' => $proposal_data->mobile,
         '#title' => t('Mobile')
     );
-    $form['how_project'] = array(
-        '#type' => 'item',
-        '#markup' => $proposal_data->how_project,
-        '#title' => t('How did you come to know about this project')
-    );
     $form['branch'] = array(
         '#type' => 'item',
         '#markup' => $proposal_data->branch,
@@ -633,6 +628,11 @@ function proposal_status_form($from, $form_state)
         '#type' => 'item',
         '#markup' => date('d-m-Y', $proposal_data->completion_date),
         '#title' => t('Expected Date of Completion')
+    );
+     $form['scilab_version'] = array(
+        '#type' => 'item',
+        '#markup' => $proposal_data->scilab_version,
+        '#title' => t('Scilab Version')
     );
     $form['operating_system'] = array(
         '#type' => 'item',
@@ -861,26 +861,27 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
     global $user;
     /* get current proposal */
     $proposal_id = arg(3);
-    /*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE id = %d", $proposal_id);*/
     $query = db_select('xcos_textbook_companion_proposal');
     $query->fields('xcos_textbook_companion_proposal');
     $query->condition('id', $proposal_id);
     $proposal_q = $query->execute();
-    if ($proposal_q) {
+    if ($proposal_q)
+    {
         $proposal_data = $proposal_q->fetchObject();
-        if (!$proposal_data) {
+        if (!$proposal_data)
+        {
             drupal_set_message(t('Invalid proposal selected. Please try again.'), 'error');
             drupal_goto('xcos-textbook-companion/manage-proposal');
             return;
-        }
-    } else {
+        } //!$proposal_data
+    } //$proposal_q
+    else
+    {
         drupal_set_message(t('Invalid proposal selected. Please try again.'), 'error');
         drupal_goto('xcos-textbook-companion/manage-proposal');
         return;
     }
     $user_data = user_load($proposal_data->uid);
-    /* $preference1_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND pref_number = %d LIMIT 1", $proposal_id, 1);
-    $preference1_data = db_fetch_object($preference1_q);*/
     $query = db_select('xcos_textbook_companion_preference');
     $query->fields('xcos_textbook_companion_preference');
     $query->condition('proposal_id', $proposal_id);
@@ -888,23 +889,14 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
     $query->range(0, 1);
     $preference1_q = $query->execute();
     $preference1_data = $preference1_q->fetchObject();
-    /********************************************************************/
-    $query = db_select('xcos_textbook_companion_preference');
-    $query->fields('xcos_textbook_companion_preference');
-    $query->condition('proposal_id', $proposal_id);
-    $query->condition('pref_number', 2);
-    $query->range(0, 1);
-    $preference2_q = $query->execute();
-    $preference2_data = $preference2_q->fetchObject();
-    /**************************************************************************/
-    $query = db_select('xcos_textbook_companion_preference');
-    $query->fields('xcos_textbook_companion_preference');
-    $query->condition('proposal_id', $proposal_id);
-    $query->condition('pref_number', 3);
-    $query->range(0, 1);
-    $preference3_q = $query->execute();
-    $preference3_data = $preference3_q->fetchObject();
-    /*************************************************************************/
+    /*$state =  _xcos_tbc_list_of_states();
+    $selected_state = isset($form_state['values']['all_state'])?$form_state['values']['all_state']:$proposal_data->state;*/
+    /*$district = _xcos_tbc_list_of_district();
+    $selected_district = isset($form_state['values']['district'])?$form_state['values']['district']:$proposal_data->district;*/
+    /*$city = _xcos_tbc_list_of_cities();
+    $selected_city = isset($form_state['values']['city'])?$form_state['values']['city']:$proposal_data->city;
+    $pincode = _xcos_tbc_list_of_city_pincode();
+    $selected_pincode = isset($form_state['values']['picode'])?$form_state['values']['pincode']:$proposal_data->pincode;*/
     $form['full_name'] = array(
         '#type' => 'textfield',
         '#title' => t('Full Name'),
@@ -928,43 +920,37 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
         '#required' => TRUE,
         '#default_value' => $proposal_data->mobile
     );
-    $form['how_project'] = array(
+    $form['branch'] = array(
         '#type' => 'select',
-        '#title' => t('How did you come to know about this project'),
-        '#options' => array(
-            'OpenModelica Website' => 'OpenModelica Website',
-            'Friend' => 'Friend',
-            'Professor/Teacher' => 'Professor/Teacher',
-            'Mailing List' => 'Mailing List',
-            'Poster in my/other college' => 'Poster in my/other college',
-            'Others' => 'Others'
-        ),
+        '#title' => t('Department/Branch'),
+        '#options' => _tbc_list_of_departments(),
         '#required' => TRUE,
-        '#default_value' => $proposal_data->how_project
+        '#default_value' => $proposal_data->branch
     );
-    
     $form['university'] = array(
         '#type' => 'textfield',
-        '#title' => t('University/ Institute'),
-        '#size' => 80,
-        '#maxlength' => 200,
+        '#title' => t('Institution/Organisation name'),
+        '#size' => 30,
+        '#maxlength' => 100,
         '#required' => TRUE,
-        '#attributes' => array(
-            'placeholder' => 'Insert full name of your institute/ university.... '
-        ),
         '#default_value' => $proposal_data->university
     );
-    $form['country'] = array(
+    /*$form['country'] = array(
         '#type' => 'select',
         '#title' => t('Country'),
         '#options' => array(
             'India' => 'India',
-            'Others' => 'Others'
+            //'Others' => 'Others'
         ),
+        '#default_value' => 'India',
+        '#prefix' => '<div id="ajax-country-list-replace">',
+        '#suffix' => '</div>',
+        '#ajax' => array(
+            'callback' => 'ajax_get_city_list_callback',
+            ),
         '#required' => TRUE,
         '#tree' => TRUE,
-        '#validated' => TRUE,
-        '#default_value' => $proposal_data->country
+        '#validated' => TRUE
     );
     $form['other_country'] = array(
         '#type' => 'textfield',
@@ -973,20 +959,19 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
         '#attributes' => array(
             'placeholder' => t('Enter your country name')
         ),
-        '#default_value' => $proposal_data->country,
         '#states' => array(
             'visible' => array(
                 ':input[name="country"]' => array(
                     'value' => 'Others'
                 )
             )
-        )
+        ),
+        '#default_value' => $proposal_data->country
     );
     $form['other_state'] = array(
         '#type' => 'textfield',
         '#title' => t('State other than India'),
         '#size' => 100,
-        '#default_value' => $proposal_data->state,
         '#attributes' => array(
             'placeholder' => t('Enter your state/region name')
         ),
@@ -996,13 +981,13 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
                     'value' => 'Others'
                 )
             )
-        )
+        ),
+        '#default_value' => $proposal_data->state
     );
     $form['other_city'] = array(
         '#type' => 'textfield',
         '#title' => t('City other than India'),
         '#size' => 100,
-        '#default_value' => $proposal_data->city,
         '#attributes' => array(
             'placeholder' => t('Enter your city name')
         ),
@@ -1012,16 +997,22 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
                     'value' => 'Others'
                 )
             )
-        )
+        ),
+        '#default_value' => $proposal_data->city
     );
     $form['all_state'] = array(
         '#type' => 'select',
-        '#title' => t('State'),
-        '#selected' => array(
-            '' => '-select-'
-        ),
-        '#options' => _list_of_states(),
-        '#default_value' => $proposal_data->state,
+        '#title' => t('State/UT'),
+        '#options' => _xcos_tbc_list_of_states(),
+        //'#empty_value' => '0',
+        //'#empty_option' => '- Select -',
+        '#default_value' => '0',
+        '#prefix' => '<div id="ajax-state-list-replace">',
+        '#suffix' => '</div>',
+        '#required' => TRUE,
+        '#ajax' => array(
+            'callback' => 'ajax_get_district_list_callback',
+            ),
         '#validated' => TRUE,
         '#states' => array(
             'visible' => array(
@@ -1029,53 +1020,90 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
                     'value' => 'India'
                 )
             )
-        )
-    );
-    $form['city'] = array(
+        ),
+        '#default_value' => $proposal_data->state
+    );*/
+    /*$form['district'] = array(
         '#type' => 'select',
-        '#title' => t('City'),
-        '#default_value' => $proposal_data->city,
-        '#options' => _list_of_cities(),
+        '#title' => t('District/Area'),
+        '#options' => _xcos_tbc_list_of_district($proposal_data->state),
+        '#empty_value' => '0',
+        '#empty_option' => '- Select -',
+        '#prefix' => '<div id="ajax-district-list-replace">',
+        '#suffix' => '</div>',
+        '#validated' => TRUE,
+        '#required' => TRUE,
+        '#ajax' => array(
+            'callback' => 'ajax_get_city_list_callback',
+            ),
         '#states' => array(
-            'visible' => array(
-                ':input[name="country"]' => array(
-                    'value' => 'India'
+            'invisible' => array(
+                ':input[name="all_state"]' => array(
+                    'value' => '0'
                 )
             )
-        )
+        ),
+        '#default_value' => $proposal_data->district
+    );*/
+    //var_dump(expression)
+    /*$form['city'] = array(
+        '#type' => 'select',
+        '#title' => t('City/Area'),
+        '#options' => _xcos_tbc_list_of_cities($proposal_data->state, $proposal_data->district),
+        '#default_value' => '0',
+        '#empty_value' => '0',
+        '#empty_option' => '- Select -',
+        '#prefix' => '<div id="ajax-city-list-replace">',
+        '#suffix' => '</div>',
+        '#validated' => TRUE,
+        '#required' => TRUE,
+        '#ajax' => array(
+            'callback' => 'ajax_get_city_pincode_list_callback',
+            ),
+        '#states' => array(
+            'invisible' => array(
+                ':input[name="district"]' => array(
+                    'value' => '0'
+                )
+            )
+        ),
+        '#default_value' => $proposal_data->city
     );
     $form['pincode'] = array(
-        '#type' => 'textfield',
+        '#type' => 'select',
         '#title' => t('Pincode'),
-        '#size' => 30,
-        '#maxlength' => 6,
-        '#required' => False,
-        '#default_value' => $proposal_data->pincode,
-        '#attributes' => array(
-            'placeholder' => 'Enter pincode....'
-        )
-    );
-    /***************************************************************************/
-    $form['hr'] = array(
-        '#type' => 'item',
-        '#markup' => '<hr>'
-    );
-    $form['faculty'] = array(
-        '#type' => 'hidden',
+        '#options' => _xcos_tbc_list_of_city_pincode($selected_city, $selected_state, $selected_district),
+        '#prefix' => '<div id="ajax-pincode-list-replace">',
+        '#suffix' => '</div>',
+        '#empty_value' => '0',
+        '#empty_option' => '- Select -',
+        '#required' => TRUE,
+        '#validated' => TRUE,
+        '#states' => array(
+            'invisible' => array(
+                ':input[name="city"]' => array(
+                    'value' => '0'
+                )
+            )
+        ),
+        '#default_value' => $proposal_data->pincode
+    );*/
+    /*$form['faculty'] = array(
+        '#type' => 'textfield',
         '#title' => t('College Teacher/Professor'),
         '#size' => 30,
         '#maxlength' => 100,
         '#required' => TRUE,
         '#default_value' => $proposal_data->faculty
-    );
+    );*/
     $form['reviewer'] = array(
-        '#type' => 'hidden',
+        '#type' => 'textfield',
         '#title' => t('Reviewer'),
         '#size' => 30,
         '#maxlength' => 100,
         '#default_value' => $proposal_data->reviewer
     );
-    $form['completion_date'] = array(
+    /*$form['completion_date'] = array(
         '#type' => 'textfield',
         '#title' => t('Expected Date of Completion'),
         '#description' => t('Input date format should be DD-MM-YYYY. Eg: 23-03-2011'),
@@ -1083,18 +1111,35 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
         '#maxlength' => 10,
         '#default_value' => date('d-m-Y', $proposal_data->completion_date)
     );
-    $form['version'] = array(
+    $form['proposed_completion_date'] = array(
         '#type' => 'textfield',
-        '#title' => t('Scilab Version'),
+        '#title' => t('Proposed Date of Completion'),
+        '#description' => t('Input date format should be DD-MM-YYYY. Eg: 23-03-2011'),
         '#size' => 10,
-        '#maxlength' => 20,
+        '#maxlength' => 10,
+        '#default_value' => date('d-m-Y', $proposal_data->proposed_completion_date)
+    );*/
+    //list($scilab, $version) = explode(' ', $proposal_data->scilab_version);
+    //$scilab_version = $version;
+    $form['version'] = array(
+        '#type' => 'select',
+        '#options' => array(
+            'Scilab 5.5.2' => 'Scilab 5.5.2',
+            'Scilab 6.1.0' => 'Scilab 6.1.0'
+            ),
+        '#title' => t('Scilab Version'),
+        /*'#size' => 10,
+        '#maxlength' => 20,*/
         '#default_value' => $proposal_data->scilab_version
     );
     $form['operating_system'] = array(
-        '#type' => 'textfield',
+        '#type' => 'select',
+        '#options' => array(
+            'Windows 32/64-bit Vista/7/8/10' => 'Windows 32/64-bit Vista/7/8/10',
+            'Linux 32/64-bit x86 Ubuntu 16.04 or above' => 'Linux 32/64-bit x86 Ubuntu 16.04 or above',
+            'MacOS 10.7 (OS X Lion) or newer' => 'MacOS 10.7 (OS X Lion) or newer'
+        ),
         '#title' => t('Operating System'),
-        '#size' => 30,
-        '#maxlength' => 50,
         '#default_value' => $proposal_data->operating_system
     );
     $form['preference1'] = array(
@@ -1151,131 +1196,7 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
         '#required' => TRUE,
         '#default_value' => $preference1_data->year
     );
-    if ($preference2_data) {
-        $form['preference2'] = array(
-            '#type' => 'fieldset',
-            '#title' => t('Book Preference 2'),
-            '#collapsible' => TRUE,
-            '#collapsed' => FALSE
-        );
-        $form['preference2']['book2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Title of the book'),
-            '#size' => 30,
-            '#maxlength' => 100,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->book
-        );
-        $form['preference2']['author2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Author Name'),
-            '#size' => 30,
-            '#maxlength' => 100,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->author
-        );
-        $form['preference2']['isbn2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('ISBN No'),
-            '#size' => 30,
-            '#maxlength' => 25,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->isbn
-        );
-        $form['preference2']['publisher2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Publisher & Place'),
-            '#size' => 30,
-            '#maxlength' => 50,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->publisher
-        );
-        $form['preference2']['edition2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Edition'),
-            '#size' => 4,
-            '#maxlength' => 2,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->edition
-        );
-        $form['preference2']['year2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Year of pulication'),
-            '#size' => 4,
-            '#maxlength' => 4,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->year
-        );
-    }
-    if ($preference3_data) {
-        $form['preference3'] = array(
-            '#type' => 'fieldset',
-            '#title' => t('Book Preference 3'),
-            '#collapsible' => TRUE,
-            '#collapsed' => FALSE
-        );
-        $form['preference3']['book3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Title of the book'),
-            '#size' => 30,
-            '#maxlength' => 100,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->book
-        );
-        $form['preference3']['author3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Author Name'),
-            '#size' => 30,
-            '#maxlength' => 100,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->author
-        );
-        $form['preference3']['isbn3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('ISBN No'),
-            '#size' => 30,
-            '#maxlength' => 25,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->isbn
-        );
-        $form['preference3']['publisher3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Publisher & Place'),
-            '#size' => 30,
-            '#maxlength' => 50,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->publisher
-        );
-        $form['preference3']['edition3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Edition'),
-            '#size' => 4,
-            '#maxlength' => 2,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->edition
-        );
-        $form['preference3']['year3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Year of pulication'),
-            '#size' => 4,
-            '#maxlength' => 4,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->year
-        );
-    }
     /* hidden fields */
-    $form['hidden_preference_id1'] = array(
-        '#type' => 'hidden',
-        '#value' => $preference1_data->id
-    );
-    /* $form['hidden_preference_id2'] = array(
-    '#type' => 'hidden',
-    '#value' => $preference2_data->id
-    );
-    $form['hidden_preference_id3'] = array(
-    '#type' => 'hidden',
-    '#value' => $preference3_data->id
-    );*/
     $form['hidden_proposal_id'] = array(
         '#type' => 'hidden',
         '#value' => $proposal_id
@@ -1285,52 +1206,28 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
         '#value' => t('Submit')
     );
     $form['cancel'] = array(
-        '#type' => 'item',
-        '#markup' => l(t('Cancel'), 'xcos-textbook-companion/manage-proposal')
+        '#type' => 'markup',
+        '#value' => l(t('Cancel'), 'manage_proposal')
     );
     return $form;
 }
 function proposal_edit_form_validate($form, &$form_state)
 {
-    if ($form_state['values']['book1'] && $form_state['values']['author1']) {
-        $bk1 = trim($form_state['values']['book1']);
-        $auth1 = trim($form_state['values']['author1']);
-        if (_xcos_dir_name($bk1, $auth1, $form_state['values']['hidden_preference_id1']) != NULL) {
-            $form_state['values']['dir_name1'] = _xcos_dir_name($bk1, $auth1, $form_state['values']['hidden_preference_id1']);
-        }
-    }
-    /*if ($form_state['values']['book2'] && $form_state['values']['author2'])
-    {
-    $bk2 = trim($form_state['values']['book2']);
-    $auth2 = trim($form_state['values']['author2']);
-    
-    if (_xcos_dir_name($bk2, $auth2, $form_state['values']['hidden_preference_id2']) != NULL)
-    {
-    $form_state['values']['dir_name2'] = _xcos_dir_name($bk2, $auth2, $form_state['values']['hidden_preference_id2']);
-    }
-    }
-    if ($form_state['values']['book3'] && $form_state['values']['author3'])
-    {
-    $bk3 = trim($form_state['values']['book3']);
-    $auth3 = trim($form_state['values']['author3']);
-    
-    if (_xcos_dir_name($bk3, $auth3, $form_state['values']['hidden_preference_id3']) != NULL)
-    {
-    $form_state['values']['dir_name3'] = _xcos_dir_name($bk3, $auth3, $form_state['values']['hidden_preference_id3']);
-    }
-    }
+    /* version */
+    /*if (!preg_match('/^\d+(?:\.\d+)+/', $form_state['values']['version']))
+        form_set_error('version', t('Please enter correct version in speacifed format'));*/
     /* mobile */
     if (!preg_match('/^[0-9\ \+]{0,15}$/', $form_state['values']['mobile']))
         form_set_error('mobile', t('Invalid mobile number'));
     /* date of completion */
-    if (!preg_match('/^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}$/', $form_state['values']['completion_date']))
-        form_set_error('completion_date', t('Invalid expected date of completion'));
-    list($d, $m, $y) = explode('-', $form_state['values']['completion_date']);
+    /*if (!preg_match('/^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}$/', $form_state['values']['completion_date']))
+        form_set_error('completion_date', t('Invalid expected date of completion'));*/
+    /*list($d, $m, $y) = explode('-', $form_state['values']['completion_date']);
     $d = (int) $d;
     $m = (int) $m;
     $y = (int) $y;
     if (!checkdate($m, $d, $y))
-        form_set_error('completion_date', t('Invalid expected date of completion'));
+        form_set_error('completion_date', t('Invalid expected date of completion'));*/
     //if (mktime(0, 0, 0, $m, $d, $y) <= time())
     //form_set_error('completion_date', t('Expected date of completion should be in future'));  
     /* edition */
@@ -1346,42 +1243,83 @@ function proposal_edit_form_validate($form, &$form_state)
     /* isbn */
     if (!preg_match('/^[0-9\-xX]+$/', $form_state['values']['isbn1']))
         form_set_error('isbn1', t('Invalid ISBN for Book Preference 1'));
-    if ($form_state['values']['version'] == 'olderversion') {
-        if ($form_state['values']['older'] == '') {
-            form_set_error('older', t('Please provide valid version'));
+   /* if ($form_state['values']['country'] == 'Others')
+    {
+        if ($form_state['values']['other_country'] == '')
+        {
+            form_set_error('other_country', t('Enter country name'));
+            // $form_state['values']['country'] = $form_state['values']['other_country'];
+        } //$form_state['values']['other_country'] == ''
+        else
+        {
+            $form_state['values']['country'] = $form_state['values']['other_country'];
         }
-    }
+        if ($form_state['values']['other_state'] == '')
+        {
+            form_set_error('other_state', t('Enter state name'));
+            // $form_state['values']['country'] = $form_state['values']['other_country'];
+        } //$form_state['values']['other_state'] == ''
+        else
+        {
+            $form_state['values']['all_state'] = $form_state['values']['other_state'];
+        }
+        if ($form_state['values']['other_city'] == '')
+        {
+            form_set_error('other_city', t('Enter city name'));
+            // $form_state['values']['country'] = $form_state['values']['other_country'];
+        } //$form_state['values']['other_city'] == ''
+        else
+        {
+            $form_state['values']['city'] = $form_state['values']['other_city'];
+        }
+    } //$form_state['values']['country'] == 'Others'
+    else
+    {
+        if ($form_state['values']['country'] == '')
+        {
+            form_set_error('country', t('Select country name'));
+            // $form_state['values']['country'] = $form_state['values']['other_country'];
+        } //$form_state['values']['country'] == ''
+        if ($form_state['values']['all_state'] == '')
+        {
+            form_set_error('all_state', t('Select state name'));
+            // $form_state['values']['country'] = $form_state['values']['other_country'];
+        } //$form_state['values']['all_state'] == ''
+        if ($form_state['values']['city'] == '')
+        {
+            form_set_error('city', t('Select city name'));
+            // $form_state['values']['country'] = $form_state['values']['other_country'];
+        } //$form_state['values']['city'] == ''
+    }*/
     return;
 }
+/***************** proposal edit from submit ********************/
 function proposal_edit_form_submit($form, &$form_state)
 {
     /* completion date to timestamp */
-    list($d, $m, $y) = explode('-', $form_state['values']['completion_date']);
-    $completion_date_timestamp = mktime(0, 0, 0, $m, $d, $y);
+    //list($d, $m, $y) = explode('-', $form_state['values']['completion_date']);
+    //$completion_date_timestamp = mktime(0, 0, 0, $m, $d, $y);
+    //list($d, $m, $y) = explode('-', $form_state['values']['proposed_completion_date']);
+    //$proposed_completion_date_timestamp = mktime(0, 0, 0, $m, $d, $y);
+    $scilab_version = $form_state['values']['version'];
     $proposal_id = $form_state['values']['hidden_proposal_id'];
-    if ($form_state['values']['version'] == 'olderversion') {
-        $form_state['values']['version'] = $form_state['values']['older'];
-    }
-    if ($form_state['values']['country'] == 'other') {
-        $form_state['values']['country'] = $form_state['values']['other_country'];
-        $form_state['values']['all_state'] = $form_state['values']['other_state'];
-    }
+    //$scilab_version = 'scilab ' . $form_state['values']['version'];
     $query = db_update('xcos_textbook_companion_proposal');
     $query->fields(array(
         'full_name' => $form_state['values']['full_name'],
         'mobile' => $form_state['values']['mobile'],
-        'how_project' => $form_state['values']['how_project'],
         'branch' => $form_state['values']['branch'],
         'university' => $form_state['values']['university'],
-        'city' => $form_state['values']['city'],
-        'pincode' => $form_state['values']['pincode'],
-        'state' => $form_state['values']['all_state'],
-        'country' => $form_state['values']['country'],
+        //'country' => $form_state['values']['country'],
+        //'city' => $form_state['values']['city'],
+        //'pincode' => $form_state['values']['pincode'],
+        //'state' => $form_state['values']['all_state'],
         'faculty' => $form_state['values']['faculty'],
         'reviewer' => $form_state['values']['reviewer'],
-        'completion_date' => $completion_date_timestamp,
+        //'completion_date' => $completion_date_timestamp,
         'operating_system' => $form_state['values']['operating_system'],
-        'scilab_version' => $form_state['values']['version']
+        'scilab_version' => $scilab_version,
+        //'proposed_completion_date' => $proposed_completion_date_timestamp,
     ));
     $query->condition('id', $proposal_id);
     $num_updated = $query->execute();
@@ -1392,10 +1330,29 @@ function proposal_edit_form_submit($form, &$form_state)
     $query->range(0, 1);
     $preference1_q = $query->execute();
     $preference1_data = $preference1_q->fetchObject();
-    $preference1_id = $preference1_data->id;
-    if ($preference1_data) {
-        del_book_pdf($preference1_data->id);
-        RenameDir($preference1_id, $form_state['values']['dir_name1']);
+    if ($preference1_data)
+        $preference1_id = $preference1_data->id;
+    /*$query = db_select('textbook_companion_preference');
+    $query->fields('textbook_companion_preference');
+    $query->condition('proposal_id', $proposal_id);
+    $query->condition('pref_number', 2);
+    $query->range(0, 1);
+    $preference2_q = $query->execute();
+    $preference2_data = $preference2_q->fetchObject();
+    if ($preference2_data)
+        $preference2_id = $preference2_data->id;
+    $query = db_select('textbook_companion_preference');
+    $query->fields('textbook_companion_preference');
+    $query->condition('proposal_id', $proposal_id);
+    $query->condition('pref_number', 3);
+    $query->range(0, 1);
+    $preference3_q = $query->execute();
+    $preference3_data = $preference3_q->fetchObject();
+    if ($preference3_data)
+        $preference3_id = $preference3_data->id;*/
+    if ($preference1_data)
+    {
+        //xcos_del_book_pdf($preference1_data->id);
         $query = db_update('xcos_textbook_companion_preference');
         $query->fields(array(
             'book' => $form_state['values']['book1'],
@@ -1404,64 +1361,13 @@ function proposal_edit_form_submit($form, &$form_state)
             'publisher' => $form_state['values']['publisher1'],
             'edition' => $form_state['values']['edition1'],
             'year' => $form_state['values']['year1'],
-            'directory_name' => $form_state['values']['dir_name1']
+            //'category' => $form_state['values']['book_category_1']
         ));
         $query->condition('id', $preference1_id);
         $num_updated = $query->execute();
-    }
-    /**************************************************************/
-    /**$query = db_select('xcos_textbook_companion_preference');
-    $query->fields('xcos_textbook_companion_preference');
-    $query->condition('proposal_id', $proposal_id);
-    $query->condition('pref_number', 2);
-    $query->range(0, 1);
-    $preference2_q = $query->execute();
-    $preference2_data = $preference2_q->fetchObject();
-    $preference2_id = $preference2_data->id;
-    if ($preference2_data)
-    {
-    del_book_pdf($preference2_data->id);        
-    RenameDir($preference2_id, $form_state['values']['dir_name2']);
-    $query = db_update('xcos_textbook_companion_preference');
-    $query->fields(array(
-    'book' => $form_state['values']['book2'],
-    'author' => $form_state['values']['author2'],
-    'isbn' => $form_state['values']['isbn2'],
-    'publisher' => $form_state['values']['publisher2'],
-    'edition' => $form_state['values']['edition2'],
-    'year' => $form_state['values']['year2'],
-    'directory_name' => $form_state['values']['dir_name2']
-    ));
-    $query->condition('id', $preference2_id);
-    $num_updated = $query->execute();
-    }
-    /*****************************************************************/
-    /**$query = db_select('xcos_textbook_companion_preference');
-    $query->fields('xcos_textbook_companion_preference');
-    $query->condition('proposal_id', $proposal_id);
-    $query->condition('pref_number', 3);
-    $query->range(0, 1);
-    $preference3_q = $query->execute();
-    $preference3_data = $preference3_q->fetchObject();
-    $preference3_id = $preference3_data->id;
-    if ($preference3_data)
-    {
-    del_book_pdf($preference3_data->id);        
-    RenameDir($preference3_id, $form_state['values']['dir_name3']);
-    $query = db_update('xcos_textbook_companion_preference');
-    $query->fields(array(
-    'book' => $form_state['values']['book3'],
-    'author' => $form_state['values']['author3'],
-    'isbn' => $form_state['values']['isbn3'],
-    'publisher' => $form_state['values']['publisher3'],
-    'edition' => $form_state['values']['edition3'],
-    'year' => $form_state['values']['year3'],
-    'directory_name' => $form_state['values']['dir_name3']
-    ));
-    $query->condition('id', $preference3_id);
-    $num_updated = $query->execute();
-    }**/
+    } //$preference1_data
     drupal_set_message(t('Proposal Updated'), 'status');
+    drupal_goto('xcos-textbook-companion/manage-proposal/all');
 }
 /******************************************************************************/
 /**************************** CATEGORY EDIT FORM ******************************/
