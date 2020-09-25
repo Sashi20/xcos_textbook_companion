@@ -9,6 +9,19 @@ function xcos_textbook_companion_menu()
 {
 	$items = array();
 	/* users */
+	$items['xcos-textbook-companion/add-tbc-titles'] = array(
+        'title' => 'Add TBC titles',
+        'description' => 'Add TBC titles',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array(
+            'add_xcos_tbc_titles_form',
+        ),
+        'access arguments' => array(
+            'xcos add tbc titles',
+        ),
+        'type' => MENU_NORMAL_ITEM,
+        'file' => 'add_xcos_tbc_titles.inc',
+    );
 	$items['xcos-textbook-companion/completed-books'] = array(
 		'title' => 'Completed Books',
 		'page callback' => 'xcos_completed_books',
@@ -783,6 +796,10 @@ function xcos_textbook_companion_menu()
 function xcos_textbook_companion_permission()
 {
 	return array(
+		'xcos add tbc titles' => array(
+            'title' => t('xcos add tbc titles'),
+            'restrict access' => true,
+        ),
 		"create xcos book proposal" => array(
 			"title" => t("xcos book proposal Form"),
 			"description" => t("xcos book proposal Form.")
@@ -2477,7 +2494,7 @@ function _xcos_tbc_list_of_states()
 function _xcos_list_of_book_titles()
 {
    $existing_tbc_titles = array();
-    $result = db_query("SELECT * from list_of_xcos_tbc_titles WHERE {tbc_name} NOT IN( SELECT  CONCAT(book, ' by ', author, ', ', publisher, ', ', year) from xcos_textbook_companion_preference as xtcp JOIN xcos_textbook_companion_proposal as xtcc ON xtcp.proposal_id = xtcc.id WHERE xtcc.proposal_status = 0 OR xtcc.proposal_status = 1 OR xtcc.proposal_status = 3)");
+    $result = db_query("SELECT * from list_of_xcos_tbc_titles WHERE {tbc_name} NOT IN( SELECT  CONCAT(book, ' by ', author, ', ', publisher, ', ', year) from xcos_textbook_companion_preference as xtcp JOIN xcos_textbook_companion_proposal as xtcc ON xtcp.proposal_id = xtcc.id WHERE xtcc.proposal_status = 0 OR xtcc.proposal_status = 1 OR xtcc.proposal_status = 3) ORDER BY tbc_name ASC");
     while ($existing_tbc_titles_data = $result->fetchObject()) {
         $existing_tbc_titles[$existing_tbc_titles_data->scilab_tbc_pref_id] = $existing_tbc_titles_data->tbc_name;
     }
