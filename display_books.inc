@@ -63,12 +63,14 @@ function xcos_completed_books()
     if ($preference_q->rowCount() == 0)
     {
         $page_content .= "Work has been completed on the following books under the Textbook Companion Project<br>
-<span style='color:red;'>The list below is not the books as named but only are the solved example for Xcos</span><hr>";
+<span style='color:red;'>The links given below do not point to the book but only point to the solved examples in Xcos.
+</span><hr>";
     } //$result->rowCount() == 0
     else
     {
         $page_content .= "Work has been completed on the following books under the Textbook Companion Project<br>
-<span style='color:red;'>The list below is not the books as named but only are the solved example for Xcos</span><hr>";
+<span style='color:red;'>The links given below do not point to the book but only point to the solved examples in Xcos.
+</span><hr>";
         $preference_rows = array();
         $i = 1;
         while ($preference_data = $preference_q->fetchObject()) {

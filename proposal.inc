@@ -540,7 +540,7 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 	$scilab_version = $form_state['values']['version'];
 	$query = "
 INSERT INTO {xcos_textbook_companion_proposal}
-    (uid, approver_uid, full_name, mobile, gender, how_project, branch, university, country, city, pincode, state, faculty, reviewer, reference, completion_date ,creation_date, approval_date, proposal_status, message, scilab_version, operating_system, teacher_email, proposal_type, reason, samplefilepath, proposed_completion_date) VALUES (:uid, :approver_uid, :full_name, :mobile, :gender, :how_project, :branch, :university, :country, :city, :pincode, :state,
+    (uid, approver_uid, full_name, mobile, gender, how_project, branch, university, country, district, city, pincode, state, faculty, reviewer, reference, completion_date ,creation_date, approval_date, proposal_status, message, scilab_version, operating_system, teacher_email, proposal_type, reason, samplefilepath, proposed_completion_date) VALUES (:uid, :approver_uid, :full_name, :mobile, :gender, :how_project, :branch, :university, :country,:district, :city, :pincode, :state,
 :faculty, :reviewer, :reference,:completion_date, :creation_date, :approval_date, :proposal_status, :message, :scilab_version,
  :operating_system, :teacher_email, :proposal_type, :reason, :samplefilepath, :proposed_completion_date)
 ";
@@ -555,6 +555,7 @@ INSERT INTO {xcos_textbook_companion_proposal}
 		":branch" => $form_state['values']['branch'],
 		":university" => $form_state['values']['university'],
 		":country" => $form_state['values']['country'],
+		":district" => $form_state['values']['district'],
 		":city" => $form_state['values']['city'],
 		":pincode" => $form_state['values']['pincode'],
 		":state" => $form_state['values']['all_state'],

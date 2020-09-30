@@ -23,11 +23,11 @@ function _proposal_pending()
         return '';
     }
     $pending_header = array(
-		'Date of Submission',
-		'Contributor Name',
-		'Proposed Date of Completion',
-		'Action'
-	);
+        'Date of Submission',
+        'Contributor Name',
+        'Proposed Date of Completion',
+        'Action'
+    );
     $output = theme('table', array(
         'header' => $pending_header,
         'rows' => $pending_rows
@@ -125,8 +125,8 @@ function _proposal_all()
         'Date of Submission',
         'Title of the Book',
         'Contributor Name',        
-		'Actual Date of Completion',
-		'Proposed Date of Completion',
+        'Actual Date of Completion',
+        'Proposed Date of Completion',
         'Status',
         'Action'
     );
@@ -304,13 +304,13 @@ function proposal_approval_form($form, &$form_state)
         }
         
      $form['proposed_completion_date'] = array(
-		'#type' => 'item',
-		'#markup' => $proposed_completion_date,
-		
-		'#title' => t('Proposed Date of Completion')
-	);
-	 if($row->completion_date != 0){
-	$actual_completion_date = date('d-m-Y', $row->completion_date);
+        '#type' => 'item',
+        '#markup' => $proposed_completion_date,
+        
+        '#title' => t('Proposed Date of Completion')
+    );
+     if($row->completion_date != 0){
+    $actual_completion_date = date('d-m-Y', $row->completion_date);
         }
         else{
         $actual_completion_date = "-----";
