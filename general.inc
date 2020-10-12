@@ -277,12 +277,12 @@ function list_examples()
 					$example_data->caption,
 					$approval_status,
 					$example_files,
-					//l('Edit', 'xcos-textbook-companion/code/edit/' . $example_data->id)
-					l('Edit', 'xcos-textbook-companion/code/edit/' . $example_data->id) . ' | ' . l('Delete', 'xcos-textbook-companion/code/delete/' . $example_data->id, array(
+					l('Edit', 'xcos-textbook-companion/code/edit/' . $example_data->id)
+					/*l('Edit', 'xcos-textbook-companion/code/edit/' . $example_data->id) . ' | ' . l('Delete', 'xcos-textbook-companion/code/delete/' . $example_data->id, array(
 						'attributes' => array(
 							'onClick' => 'return confirm("Are you sure you want to delete the example?")'
 						)
-					))
+					))*/
 				),
 				'valign' => 'top'
 			);
