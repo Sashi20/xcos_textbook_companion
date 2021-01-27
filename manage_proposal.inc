@@ -39,8 +39,7 @@ function _proposal_all()
     function _tbc_ext($status, $preference_id)
     {
         if ($status == "Approved") {
-            //return " | " . l("ER", "tbc_external_review/add_book/" . $preference_id);
-            return "";
+            return " | " . l("ER", "xcos-tbc-external-review/add-book/" . $preference_id);
         } else {
             return "";
         }

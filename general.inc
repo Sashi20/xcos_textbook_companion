@@ -66,6 +66,7 @@ function list_chapters()
 		return;
 	} //!$preference_data
 	/************************ end approve book details **************************/
+	if($preference_data->follow_guidelines == 1){
 	$return_html = '';
 	$return_html .= '<strong>Title of the Book:</strong><br />' . $preference_data->book . '<br /><br />';
 	$return_html .= '<strong>Contributor Name:</strong><br />' . $proposal_data->full_name . '<br /><br />';
@@ -113,6 +114,13 @@ function list_chapters()
 	));
 	$submited_all_example = drupal_get_form("all_example_submitted_check_form",$preference_data->id);
     $return_html .= drupal_render($submited_all_example);
+	}
+	else{
+		drupal_goto('xcos-textbook-companion/follow-guidelines/' . $preference_data->id);
+	/*$return_html = '';
+	$follow_guidelines = drupal_get_form("follow_guidelines_form",$preference_data->id);
+    $return_html .= drupal_render($follow_guidelines);*/
+	}	
 	return $return_html;
 }
 function list_examples()
@@ -368,4 +376,116 @@ db_query('UPDATE xcos_textbook_companion_preference SET submited_all_examples_co
     if (!drupal_mail('xcos_textbook_companion', 'all_code_submitted', $email_to, language_default(), $param, $from, TRUE))
         drupal_set_message('Error sending email message.', 'error');
 }
+}
+
+function follow_guidelines_form($form,&$form_state)
+{
+	$preference_id = arg(2);
+    $form = array();
+    $form['coding_guidelines'] = array(
+    	'#type' => 'item',
+    	'#markup' => t('<p><span style="color:#696969"><strong>All the guidelines should be followed without fail for timely acceptance of code. Failure to do so might result in rejection of your work. </strong></span></p>
+
+<ol>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">Visit </span><a href="https://scilab.in/Completed_Books" target="_blank">this</a><span style="background-color:transparent; font-family:arial; font-size:11pt"> page and click on your proposed Scilab TBC. You will now get an option to download the Scilab code for the chosen TBC.&nbsp;</span></span></p>
+	</li>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">System Requirement</span></span></p>
+
+	<ol>
+		<li dir="ltr">
+		<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">You have to use Scilab 6.1.0 and above for creating the Xcos examples.&nbsp;</span></span></p>
+		</li>
+		<li dir="ltr">
+		<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">You may use a different version of Scilab for executing the Scilab TBC code, if required.</span></span></p>
+		</li>
+		<li dir="ltr">
+		<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">You may use a Windows/Linux/Mac OS</span></span></p>
+		</li>
+	</ol>
+	</li>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">If the 3rd solved problem from chapter 1 is to be represented (Example 1.3), then your file must be named as Ex1_3.xcos.</span></span></p>
+	</li>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">Dependency files</span></span></p>
+
+	<ol>
+		<li dir="ltr">
+		<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">Use .sce extension for writing code while setting up the parameters for an Xcos diagram.</span></span></p>
+		</li>
+		<li dir="ltr">
+		<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">Use .sci extension for writing code for user defined functions.</span></span></p>
+		</li>
+		<li dir="ltr">
+		<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">These dependencies (if any) must be mentioned in a textbox clearly in the Xcos diagram.</span></span></p>
+		</li>
+	</ol>
+	</li>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">Do not include problem statements/text from the book in the diagram.</span></span></p>
+	</li>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">Plotting</span></span></p>
+
+	<ol>
+		<li dir="ltr">
+		<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">All the plots must have appropriate labels on its axes.</span></span></p>
+		</li>
+		<li dir="ltr">
+		<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">If a single plot contains several graphs then a legend must be added to help&nbsp;differentiate between different plots.</span></span></p>
+		</li>
+	</ol>
+	</li>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">The symbols used in the code should be the same as those being used in the textbook. If you are unable to write a symbol, you can write the name of the symbol in words. For example, </span>"θ" <span style="background-color:transparent; font-family:arial; font-size:11pt">can be written as "theta".</span></span></p>
+	</li>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">Check that you are using the correct formula while using in-built functions (For example, the angles must be converted to degree (or radians) before calculating the sine or cosine etc).</span></span></p>
+	</li>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">Label the input/output blocks and superblocks (if applicable) used in Xcos diagram using a textbox.</span></span></p>
+	</li>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">Label the numeric output blocks that display the results,&nbsp;with proper units.</span></span></p>
+	</li>
+	<li dir="ltr">
+	<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">If the </span><strong>textbook contains errors</strong><span style="background-color:transparent; font-family:arial; font-size:11pt"> in calculations/results, </span><strong>mention </strong><span style="background-color:transparent; font-family:arial; font-size:11pt">the same in the block diagram itself by using the textbox.</span></span></p>
+
+	<ol>
+		<li dir="ltr">
+		<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">If the degree of error is less than +/- 2 then </span><em>"The answers vary due to round off error"</em><span style="background-color:transparent; font-family:arial; font-size:11pt"> must be mentioned</span></span></p>
+		</li>
+		<li dir="ltr">
+		<p dir="ltr"><span style="color:#696969"><span style="background-color:transparent; font-family:arial; font-size:11pt">If the degree of error is more than +/- 2 then </span><em>"The answer provided in the textbook is wrong"</em><span style="background-color:transparent; font-family:arial; font-size:11pt"> must be mentioned.</span></span></p>
+		</li>
+	</ol>
+	</li>
+</ol>
+'),
+    );
+    $form['follow_guidelines'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('I have read the coding guidelines'),
+           // '#description' => 'Once you have submitted this option you are not able to upload more examples.',
+            '#required' => TRUE,
+        );
+        $form['hidden_preference_id'] = array(
+        '#type' => 'hidden',
+        '#value' => $preference_id
+    );
+        $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Submit')
+    );
+        return $form;
+}
+
+function follow_guidelines_form_submit($form,&$form_state){
+global $user;
+if ($form_state['values']['follow_guidelines'] == 1) {
+db_query('UPDATE xcos_textbook_companion_preference SET follow_guidelines = 1 WHERE id = :preference_id',array(':preference_id' => $form_state['values']['hidden_preference_id']));
+}
+drupal_goto('xcos-textbook-companion/code');
 }

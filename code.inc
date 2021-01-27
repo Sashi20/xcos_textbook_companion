@@ -65,6 +65,11 @@ function upload_examples_form($form, &$form_state)
 	} //!$preference_data
 	/************************ end approve book details **************************/
 	/* add javascript for automatic book title, check if example uploaded, dependency selection effects */
+	if($preference_data->follow_guidelines == 0){
+		drupal_set_message(t('Please read the coding guidelines'), 'error');
+		drupal_goto('xcos-textbook-companion/code');
+	}
+	else{
 	$form['#attributes'] = array(
         'enctype' => "multipart/form-data"
     );
@@ -221,6 +226,7 @@ $form['book_details']['pref_id'] = array(
 		'#value' => l(t('Cancel'), 'xcos-textbook-companion/code')
 	);
 	return $form;
+}
 }
 function upload_examples_form_validate($form, &$form_state)
 {
