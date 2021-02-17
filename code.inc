@@ -241,6 +241,8 @@ function upload_examples_form_validate($form, &$form_state)
 		/* check if atleast one source or result file is uploaded */
 		if (!($_FILES['files']['name']['sourcefile1'] || $_FILES['files']['name']['xcos1']))
 			form_set_error('sourcefile1', t('Please upload atleast one main or source file or xcos file.'));
+		if (!($_FILES['files']['name']['result1']))
+			form_set_error('result1', t('Please upload atleast one result file.'));
 		/* check for valid filename extensions */
 		foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
 		{
