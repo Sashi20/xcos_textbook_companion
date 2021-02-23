@@ -65,6 +65,11 @@ function upload_examples_form($form, &$form_state)
 	} //!$preference_data
 	/************************ end approve book details **************************/
 	/* add javascript for automatic book title, check if example uploaded, dependency selection effects */
+	if($preference_data->follow_guidelines == 0){
+		drupal_set_message(t('Please read the coding guidelines'), 'error');
+		drupal_goto('xcos-textbook-companion/code');
+	}
+	else{
 	$form['#attributes'] = array(
         'enctype' => "multipart/form-data"
     );
@@ -222,6 +227,7 @@ $form['book_details']['pref_id'] = array(
 	);
 	return $form;
 }
+}
 function upload_examples_form_validate($form, &$form_state)
 {
 	if (!check_name($form_state['values']['name']))
@@ -235,6 +241,8 @@ function upload_examples_form_validate($form, &$form_state)
 		/* check if atleast one source or result file is uploaded */
 		if (!($_FILES['files']['name']['sourcefile1'] || $_FILES['files']['name']['xcos1']))
 			form_set_error('sourcefile1', t('Please upload atleast one main or source file or xcos file.'));
+		if (!($_FILES['files']['name']['result1']))
+			form_set_error('result1', t('Please upload atleast one result file.'));
 		/* check for valid filename extensions */
 		foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
 		{

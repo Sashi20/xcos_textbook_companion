@@ -285,6 +285,18 @@ function xcos_textbook_companion_menu()
 		),
 		'file' => 'general.inc'
 	);
+	$items['xcos-textbook-companion/follow-guidelines'] = array(
+		'title' => 'Xcos Coding Guidelines',
+		'description' => 'Xcos Coding Guidelines',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'follow_guidelines_form'
+		),
+		'access arguments' => array(
+			'upload xcos code'
+		),
+		'file' => 'general.inc'
+	);
 	$items['xcos-textbook-companion/code/list_chapters'] = array(
 		'title' => 'List Chapters',
 		'description' => 'List Chapters',
@@ -736,36 +748,6 @@ function xcos_textbook_companion_menu()
 		),
 		'file' => 'cheque_contact.inc'
 	);
-	$items['xcos-textbook-companion/certificate'] = array(
-		'title' => 'List Of All Certificates',
-		'description' => 'List Of All Certificates',
-		'page callback' => '_list_all_certificates',
-		'access arguments' => array(
-			'list all xcos certificates'
-		),
-		'file' => 'pdf/list_all_certificates.inc'
-	);
-	$items['xcos-textbook-companion/certificate/generate-pdf'] = array(
-		'title' => 'Download Certificate',
-		'description' => 'Download Certificate',
-		'page callback' => 'drupal_get_form',
-		'page arguments' => array(
-			'generate_pdf'
-		),
-		'access arguments' => array(
-			'generate pdf'
-		),
-		'file' => 'pdf/generate_pdf.inc'
-	);
-	$items["xcos-textbook-companion/certificates/verify"] = array(
-        "title" => "Certificate Verification",
-        "page callback" => "verify_certificates",
-        "access arguments" => array(
-            "verify xcos certificates"
-        ),
-	'file' => 'pdf/verify_certificates.inc',
-       
-    );
 	$items['xcos-textbook-companion/manage-proposal/paper-submission'] = array(
 		'title' => 'Application Submission',
 		'description' => 'Application Submission',
@@ -859,18 +841,6 @@ function xcos_textbook_companion_permission()
 		"comment cheque" => array(
 			"title" => t("Comment cheque"),
 			"description" => t("Comment cheque.")
-		),
-		"list all xcos certificates" => array(
-			"title" => t("list all xcos certificates"),
-			"description" => t("Allows users to list all xcos certificates.")
-		),
-		"verify xcos certificates" => array(
-			"title" => t("Verify certificates"),
-			"description" => t("Allows users to verify xcos certificates.")
-		),
-		"generate pdf" => array(
-			"title" => t("Generate pdf"),
-			"description" => t("Allows users to Generate pdf.")
 		),
 		"paper submission form" => array(
 			"title" => t("paper submission form"),

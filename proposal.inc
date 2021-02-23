@@ -340,7 +340,7 @@ function book_proposal_form($form, &$form_state)
 		//'#date_increment' => 0,
 		//'#minDate' => '+0',
 		//'#date_year_range' => '0 : +0',
-		'#datepicker_options' => array('minDate' => 0),
+		'#datepicker_options' => array('maxDate' => 90, 'minDate' => 0),
 		'#required' => TRUE
 	);
 	$form['operating_system'] = array(
@@ -365,6 +365,11 @@ function book_proposal_form($form, &$form_state)
         	'callback' => 'ajax_scilab_tbc_pref_data',
         	),
         	'#suffix' => '<div id="ajax_tbc_pref_data_replace"></div>',
+	);
+	$form['terms_and_condition'] = array(
+		'#type' => 'checkbox',
+		'#title' => t('I understand that I should refer to the Scilab Textbook Companion (PDF and code) to create the Xcos TBC. This is to ensure consistency in the example number, caption, variable names, axes labeling etc.'),
+		'#required' => TRUE
 	);
 	$form['submit'] = array(
 		'#type' => 'submit',
