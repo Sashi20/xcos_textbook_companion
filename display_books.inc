@@ -55,10 +55,11 @@ function xcos_completed_books()
     $query->fields('pe', array('id','book','author'));
     $query->fields('po', array('full_name'));
     $query->fields('po', array('university'));
+    $query->fields('po', array('completion_date'));
     $query->leftJoin('xcos_textbook_companion_proposal', 'po', 'pe.proposal_id = po.id');
     $query->condition('po.proposal_status', 3);
     $query->condition('pe.approval_status', 1);
-    $query->orderBy('po.completion_date', 'ASC');
+    $query->orderBy('po.completion_date', 'DESC');
     $preference_q = $query->execute();
     if ($preference_q->rowCount() == 0)
     {
@@ -74,22 +75,22 @@ function xcos_completed_books()
         $preference_rows = array();
         $i = 1;
         while ($preference_data = $preference_q->fetchObject()) {
-            //$approval_date = date("Y", $row->approval_date);
+            $completion_date = date("Y", $preference_data->completion_date);
             $preference_rows[] = array(
                 $i,
                 l($preference_data->book . ' by ' . $preference_data->author , 'xcos-textbook-companion/textbook-run/' . $preference_data->id),
                 $preference_data->full_name,
                 $preference_data->university,
-               // $approval_date
+                $completion_date
             );
             $i++;
         } //$row = $result->fetchObject()
         $preference_header = array(
             'No',
-            'Completed Books',
+            'Title of the Book',
             'Contributor Name',
-            'Institution name',
-            //'Year'
+            'University / Institute',
+            'Year of Completion'
         );
         $page_content .= theme('table', array(
             'header' => $preference_header,
