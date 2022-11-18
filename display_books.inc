@@ -73,7 +73,7 @@ function xcos_completed_books()
 <span style='color:red;'>The links given below do not point to the book but only point to the solved examples in Xcos.
 </span><hr>";
         $preference_rows = array();
-        $i = 1;
+        $i = $preference_q->rowCount();
         while ($preference_data = $preference_q->fetchObject()) {
             $completion_date = date("Y", $preference_data->completion_date);
             $preference_rows[] = array(
@@ -83,7 +83,7 @@ function xcos_completed_books()
                 $preference_data->university,
                 $completion_date
             );
-            $i++;
+            $i--;
         } //$row = $result->fetchObject()
         $preference_header = array(
             'No',
