@@ -20,7 +20,7 @@ $preference_q = $query->execute();
     {
         $page_content .= "Work is under progress for the follwoing books under the Textbook Companion Project<hr>";
         $preference_rows = array();
-        $i = 1;
+        $i = $preference_q->rowCount();
         while ($preference_data = $preference_q->fetchObject()) {
             //$approval_date = date("Y", $row->approval_date);
             $preference_rows[] = array(
@@ -30,7 +30,7 @@ $preference_q = $query->execute();
                 $preference_data->university,
                // $approval_date
             );
-            $i++;
+            $i--;
         } //$row = $result->fetchObject()
         $preference_header = array(
             'No',
