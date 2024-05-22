@@ -212,7 +212,7 @@ function xcos_textbook_companion_schema()
         )
     );
     /* chapter */
-    $schema['xcos_textbook_companion_chapter'] = array(
+    $schema['textbook_companion_chapter'] = array(
         'description' => t('TODO: please describe this table!'),
         'fields' => array(
             'id' => array(
@@ -242,7 +242,7 @@ function xcos_textbook_companion_schema()
         )
     );
     /* examples */
-    $schema['xcos_textbook_companion_example'] = array(
+    $schema['textbook_companion_example'] = array(
         'description' => t('TODO: please describe this table!'),
         'fields' => array(
             'id' => array(
@@ -293,7 +293,7 @@ function xcos_textbook_companion_schema()
         )
     );
     /* example files */
-    $schema['xcos_textbook_companion_example_files'] = array(
+    $schema['textbook_companion_example_files'] = array(
         'description' => t('TODO: please describe this table!'),
         'fields' => array(
             'id' => array(

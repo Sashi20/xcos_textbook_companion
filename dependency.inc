@@ -6,8 +6,8 @@ function upload_dependency_form($form, &$form_state)
 	/************************ start approve book details ************************/
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE uid = %d ORDER BY id DESC LIMIT 1", $user->uid);
 	$proposal_data = db_fetch_object($proposal_q);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('uid', $user->uid);
 	$query->orderBy('id', 'DESC');
 	$query->range(0, 1);
@@ -46,8 +46,8 @@ function upload_dependency_form($form, &$form_state)
 	} //$proposal_data->proposal_status != 1 && $proposal_data->proposal_status != 4
 	/*$preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $proposal_data->id);
 	$preference_data = db_fetch_object($preference_q);*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('proposal_id', $proposal_data->id);
 	$query->condition('approval_status', 1);
 	$query->range(0, 1);
@@ -116,7 +116,7 @@ function upload_dependency_form_validate($form, &$form_state)
 	/* get approved book details */
 	/*$book_q = db_query("SELECT pro.id as pro_id, pre.id as pre_id, pre.book as pre_book, pro.full_name as pro_full_name FROM {xcos_textbook_companion_proposal} pro JOIN {xcos_textbook_companion_preference} pre ON pro.id = pre.proposal_id WHERE pro.proposal_status = 1 AND pre.approval_status = 1 AND pro.uid = %d", $user->uid);
 	$book_data = db_fetch_object($book_q);*/
-	$query = db_select('xcos_textbook_companion_proposal', 'pro');
+	$query = db_select('textbook_companion_proposal', 'pro');
 	$query->fields('pro', array(
 		'id',
 		'full_name'
@@ -146,7 +146,7 @@ function upload_dependency_form_validate($form, &$form_state)
 					form_set_error($file_form_name, t('File size cannot be zero.'));
 				/* check if file already exists */
 				/*$dep_exists_data = db_fetch_object(db_query("SELECT * FROM {xcos_textbook_companion_dependency_files} WHERE filename = '%s'", $_FILES['files']['name'][$file_form_name]));*/
-				$query = db_select('xcos_textbook_companion_dependency_files');
+				$query = db_select('textbook_companion_dependency_files');
 				$query->fields('xcos_textbook_companion_dependency_files');
 				$query->condition('filename', $_FILES['files']['name'][$file_form_name]);
 				$result = $query->execute();
@@ -167,8 +167,8 @@ function upload_dependency_form_submit($form, &$form_state)
 	/* get approved book details */
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE uid = %d ORDER BY id DESC LIMIT 1", $user->uid);
 	$proposal_data = db_fetch_object($proposal_q);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('uid', $user->uid);
 	$query->orderBy('id', 'DESC');
 	$query->range(0, 1);
@@ -207,8 +207,8 @@ function upload_dependency_form_submit($form, &$form_state)
 	} //$proposal_data->proposal_status != 1 && $proposal_data->proposal_status != 4
 	/*$preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $proposal_data->id);
 	$preference_data = db_fetch_object($preference_q);*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('proposal_id', $proposal_data->id);
 	$query->condition('approval_status', 1);
 	$query->range(0, 1);
@@ -307,7 +307,7 @@ function _list_existing_dependency($book_id)
 	// $return_html = '<ul>';
 	/*$query = "SELECT * FROM xcos_textbook_companion_dependency_files WHERE preference_id = %d ORDER BY filename ASC";
 	$result = db_query($query, $book_id);*/
-	$query = db_select('xcos_textbook_companion_dependency_files');
+	$query = db_select('textbook_companion_dependency_files');
 	$query->fields('xcos_textbook_companion_dependency_files');
 	$query->condition('preference_id', $book_id);
 	$query->orderBy('filename', 'ASC');
@@ -339,8 +339,8 @@ function edit_dependency_form($form_state, $dependency_id = 0)
 	/************************ start approve book details ************************/
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE uid = %d ORDER BY id DESC LIMIT 1", $user->uid);
 	$proposal_data = db_fetch_object($proposal_q);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('uid', $user->uid);
 	$query->orderBy('id', 'DESC');
 	$query->range(0, 1);
@@ -379,8 +379,8 @@ function edit_dependency_form($form_state, $dependency_id = 0)
 	} //$proposal_data->proposal_status != 1 && $proposal_data->proposal_status != 4
 	/*$preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $proposal_data->id);
 	$preference_data = db_fetch_object($preference_q);*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('proposal_id', $proposal_data->id);
 	$query->condition('approval_status', 1);
 	$query->range(0, 1);
@@ -400,7 +400,7 @@ function edit_dependency_form($form_state, $dependency_id = 0)
 	";
 	$result = db_query($query);
 	$row = db_fetch_object($result);*/
-	$query_dep = db_select('xcos_textbook_companion_dependency_files');
+	$query_dep = db_select('textbook_companion_dependency_files');
 	$query_dep->fields('xcos_textbook_companion_dependency_files');
 	$query_dep->condition('id', $dependency_id);
 	$result = $query_dep->execute();
@@ -470,7 +470,7 @@ function edit_dependency_form_validate($form, &$form_state)
 				$form_state["values"]["dependency_id"]
 				)
 				);*/
-				$query = db_select('xcos_textbook_companion_dependency_files');
+				$query = db_select('textbook_companion_dependency_files');
 				$query->fields('xcos_textbook_companion_dependency_files');
 				$query->condition('filename', $_FILES['files']['name'][$file_form_name]);
 				$query->condition('id', $form_state["values"]["dependency_id"], '<>');
@@ -492,8 +492,8 @@ function edit_dependency_form_submit($form, &$form_state)
 	/* get approved book details */
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE uid = %d ORDER BY id DESC LIMIT 1", $user->uid);
 	$proposal_data = db_fetch_object($proposal_q);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('uid', $user->uid);
 	$query->orderBy('id', 'DESC');
 	$query->range(0, 1);
@@ -532,8 +532,8 @@ function edit_dependency_form_submit($form, &$form_state)
 	} //$proposal_data->proposal_status != 1 && $proposal_data->proposal_status != 4
 	/*$preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $proposal_data->id);
 	$preference_data = db_fetch_object($preference_q);*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('proposal_id', $proposal_data->id);
 	$query->condition('approval_status', 1);
 	$query->range(0, 1);
@@ -563,7 +563,7 @@ function edit_dependency_form_submit($form, &$form_state)
 	";
 	$result = db_query($query, $form_state["values"]["dependency_id"]);
 	$row = db_fetch_object($result);*/
-	$query = db_select('xcos_textbook_companion_dependency_files');
+	$query = db_select('textbook_companion_dependency_files');
 	$query->fields('xcos_textbook_companion_dependency_files');
 	$query->condition('id', $form_state["values"]["dependency_id"]);
 	$result = $query->execute();
@@ -664,8 +664,8 @@ function delete_dependency($dependency_id = 0, $confirm = "")
 	/************************ start approve book details ************************/
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE uid = %d ORDER BY id DESC LIMIT 1", $user->uid);
 	$proposal_data = db_fetch_object($proposal_q);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('uid', $user->uid);
 	$query->orderBy('id', 'DESC');
 	$query->range(0, 1);
@@ -704,8 +704,8 @@ function delete_dependency($dependency_id = 0, $confirm = "")
 	} //$proposal_data->proposal_status != 1 && $proposal_data->proposal_status != 4
 	/*$preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $proposal_data->id);
 	$preference_data = db_fetch_object($preference_q);*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('proposal_id', $proposal_data->id);
 	$query->condition('approval_status', 1);
 	$query->range(0, 1);
@@ -728,7 +728,7 @@ function delete_dependency($dependency_id = 0, $confirm = "")
 		";
 		$result = db_query($query);
 		$row = db_fetch_object($result);*/
-		$query = db_select('xcos_textbook_companion_dependency_files');
+		$query = db_select('textbook_companion_dependency_files');
 		$query->fields('xcos_textbook_companion_dependency_files');
 		$query->condition('id', $dependency_id);
 		$result = $query->execute();
@@ -774,7 +774,7 @@ function delete_dependency($dependency_id = 0, $confirm = "")
 		";
 		$result = db_query($query, $dependency_id);
 		$row = db_fetch_object($result);*/
-		$query = db_select('xcos_textbook_companion_dependency_files');
+		$query = db_select('textbook_companion_dependency_files');
 		$query->fields('xcos_textbook_companion_dependency_files');
 		$query->condition('id', $dependency_id);
 		$result = $query->execute();
@@ -790,9 +790,9 @@ function delete_dependency($dependency_id = 0, $confirm = "")
 			WHERE dep.id = %d
 			";
 			$result = db_query($query, $dependency_id);*/
-			$query = db_select('xcos_textbook_companion_example_dependency', 'dep');
+			$query = db_select('textbook_companion_example_dependency', 'dep');
 			$query->fields('dep');
-			$query->leftJoin('xcos_textbook_companion_example', 'exa', 'exa.id = dep.example_id');
+			$query->leftJoin('textbook_companion_example', 'exa', 'exa.id = dep.example_id');
 			$query->condition('dep.id', $dependency_id);
 			$result = $query->execute();
 			$list = "";

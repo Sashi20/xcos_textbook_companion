@@ -2,12 +2,13 @@
 /* function to display books in progress */
 function xcos_books_in_progress(){
     $page_content = "";
-    $query = db_select('xcos_textbook_companion_preference', 'pe');
+    $query = db_select('textbook_companion_preference', 'pe');
 $query->fields('pe', array('book', 'author', 'publisher', 'year', 'id'));
 $query->fields('po', array('full_name', 'university'));
-$query->leftJoin('xcos_textbook_companion_proposal', 'po', 'pe.proposal_id = po.id');
+$query->leftJoin('textbook_companion_proposal', 'po', 'pe.id = po.preference_id');
 $query->condition('po.proposal_status', 3, '<>');
 $query->condition('pe.approval_status', 1);
+$query->condition('po.tbc_type','X');
 $query->orderBy('pe.book', 'ASC');
 $preference_q = $query->execute();
 
@@ -51,7 +52,7 @@ function xcos_completed_books()
 {
     $page_content = "";
 
-    $query = db_select('xcos_textbook_companion_preference', 'pe');
+    $query = db_select('textbook_companion_preference', 'pe');
     $query->fields('pe', array('id','book','author'));
     $query->fields('po', array('full_name'));
     $query->fields('po', array('university'));
@@ -219,7 +220,7 @@ function _textbook_companion_list_of_new_category_display($category_id = NULL)
                 if ($sub_category_list_data->subcategory == $preference_data->subcategory && $sub_category_list_data->maincategory_id == $preference_data->category_id)
                 {
                     $category .= "<li>";
-                    $category .= l($preference_data->book . " by " . $preference_data->author . ", " . $preference_data->publisher . ", " . $preference_data->year, 'textbook_run/' . $preference_data->pe_id . '/' . $preference_data->sub_category . '/' . $preference_data->category_id);
+                    $category .= l($preference_data->book . " by " . $preference_data->author . ", " . $preference_data->publisher . ", " . $preference_data->year, 'xcos-textbook-companion/textbook-run/' . $preference_data->pe_id . '/' . $preference_data->sub_category . '/' . $preference_data->category_id);
                     $category .= "</li>";
                 } //$sub_category_list_data->subcategory == $preference_data->subcategory && $sub_category_list_data->maincategory_id == $preference_data->category_id
             } //$preference_data = $preference_q->fetchObject()
@@ -252,24 +253,24 @@ function tbc_completed_books_all()
     $output .= "</h4></ol>";
     return $output;
 }
-function tbc_completed_books_display_new_category_all()
+function xcos_tbc_completed_books_display_new_category_all()
 {
     $category_id = NULL;
     $output = "";
-    $tbc_books_display_new_category_form = drupal_get_form("tbc_books_display_new_category_form");
-    $output .= drupal_render($tbc_books_display_new_category_form);
+    $xcos_tbc_books_display_new_category_form = drupal_get_form("xcos_tbc_books_display_new_category_form");
+    $output .= drupal_render($xcos_tbc_books_display_new_category_form);
     return $output;
 }
-function tbc_books_display_new_category_form($form, &$form_state)
+function xcos_tbc_books_display_new_category_form($form, &$form_state)
 {
     $category_default_value = 0;
-        $countresult = db_query("SELECT count(DISTINCT pe.id) c
+        $countresult = db_query("SELECT count(DISTINCT po.id) c
       FROM textbook_companion_preference pe
-      LEFT JOIN textbook_companion_proposal po ON pe.proposal_id = po.id
+      LEFT JOIN textbook_companion_proposal po ON pe.id = po.preference_id
       LEFT JOIN textbook_companion_book_main_subcategories tcbm ON pe.id = tcbm.pref_id
       LEFT JOIN list_of_category loc ON tcbm.main_category = loc.category_id
-      WHERE po.proposal_status = 3 AND pe.approval_status = 1 AND pe.category>0
-      AND pe.id = tcbm.pref_id ORDER BY pe.book");
+      WHERE po.proposal_status = 3 AND pe.approval_status = 1 AND po.tbc_type = :tbc_type AND pe.category>0
+      AND pe.id = tcbm.pref_id ORDER BY pe.book", array(":tbc_type" => 'X'));
     $count_row = $countresult->fetchObject();
     $book_count = $count_row->c;
     $form['completed_book_note'] = array(
@@ -279,15 +280,12 @@ function tbc_books_display_new_category_form($form, &$form_state)
     $form['completed_book_count'] = array(
         '#type' => 'item',
         '#markup' => "Total number of completed books: " . $book_count.
-                     "<br><span style='color:red;'>The links given below does ".
-                     "not contain any parts of the book reproduced, These ".
-                     "links only contain the Scilab code for the solved ".
-                     "examples from the book.</span>"
+                     "<br><span style='color:red;'>No part of any book is reproduced through these links. These links only contain the Scilab code for the solved examples in the book.</span>"
         );
     $form['category'] = array(
         '#type' => 'select',
         '#title' => t('Category'),
-        '#options' => _list_of_display_category(),
+        '#options' => _xcos_list_of_display_category(),
         '#default_value' => $category_default_value,
         '#ajax' => array(
             'callback' => 'ajax_display_all_book_list_callback'
@@ -301,7 +299,7 @@ function tbc_books_display_new_category_form($form, &$form_state)
     $form['subcategory'] = array(
         '#type' => 'select',
         '#title' => t('Sub Category'),
-        '#options' => _list_of_subcategory($category_default_value),
+        '#options' => _xcos_list_of_subcategory($category_default_value),
         '#default_value' => $category_default_value,
         '#ajax' => array(
             'callback' => 'ajax_display_subcategory_book_list_callback'
@@ -321,11 +319,11 @@ function tbc_books_display_new_category_form($form, &$form_state)
         '#type' => 'item',
         '#prefix' => '<div id="ajax-book-list-replace">',
         '#suffix' => '</div>',
-        '#markup' => _list_of_all_completed_books()
+        '#markup' => _list_of_all_xcos_completed_books()
     );
     return $form;
 }
-function _list_of_display_category($category_id = NULL)
+function _xcos_list_of_display_category($category_id = NULL)
 {
     $category[0] = "All";
     if ($category_id == NULL)
@@ -355,14 +353,14 @@ function ajax_display_all_book_list_callback($form, $form_state)
     $category_default_value = $form_state['values']['category'];
     if ($category_default_value > 0)
     {
-        $form['subcategory']['#options'] = _list_of_subcategory($category_default_value);
-        $form['book']['#markup'] = _list_of_all_completed_books($category_default_value);
+        $form['subcategory']['#options'] = _xcos_list_of_subcategory($category_default_value);
+        $form['book']['#markup'] = _list_of_all_xcos_completed_books($category_default_value);
         $commands[] = ajax_command_replace("#ajax-subcategory-list-replace", drupal_render($form['subcategory']));
         $commands[] = ajax_command_replace("#ajax-book-list-replace", drupal_render($form['book']));
     } //$category_default_value > 0
     else
     {
-        $form['book']['#markup'] = _list_of_all_completed_books();
+        $form['book']['#markup'] = _list_of_all_xcos_completed_books();
         $commands[] = ajax_command_replace("#ajax-book-list-replace", drupal_render($form['book']));
         $commands[] = ajax_command_html("#ajax-subcategory-list-replace", '');
     }
@@ -377,14 +375,14 @@ function ajax_display_subcategory_book_list_callback($form, $form_state)
     $subcategory_default_value = $form_state['values']['subcategory'];
     if ($category_default_value > 0 && $subcategory_default_value > 0)
     {
-        $form['subcategory']['#options'] = _list_of_subcategory($category_default_value);
-        $form['book']['#markup'] = _list_of_all_completed_books($category_default_value, $subcategory_default_value);
+        $form['subcategory']['#options'] = _xcos_list_of_subcategory($category_default_value);
+        $form['book']['#markup'] = _list_of_all_xcos_completed_books($category_default_value, $subcategory_default_value);
         $commands[] = ajax_command_replace("#ajax-subcategory-list-replace", drupal_render($form['subcategory']));
         $commands[] = ajax_command_replace("#ajax-book-list-replace", drupal_render($form['book']));
     } //$category_default_value > 0
     else
     {
-        $form['book']['#markup'] = _list_of_all_completed_books();
+        $form['book']['#markup'] = _list_of_all_xcos_completed_books();
         $commands[] = ajax_command_replace("#ajax-book-list-replace", drupal_render($form['book']));
         $commands[] = ajax_command_html("#ajax-subcategory-list-replace", '');
     }
@@ -394,63 +392,69 @@ function ajax_display_subcategory_book_list_callback($form, $form_state)
     );
 }
 /*************************************************************************/
-function _list_of_all_completed_books($category_default_value = NULL, $subcategory_default_value = NULL)
+function _list_of_all_xcos_completed_books($category_default_value = NULL, $subcategory_default_value = NULL)
 {
     $output = "";
     //get the book count
-    $result = db_query("SELECT COUNT( pe.book ) AS book_count FROM {textbook_companion_preference} pe LEFT JOIN textbook_companion_proposal po ON pe.proposal_id = po.id WHERE po.proposal_status =3 AND pe.approval_status =1 AND pe.category>0");
+    $result = db_query("SELECT COUNT( pe.book ) AS book_count FROM {textbook_companion_preference} pe LEFT JOIN textbook_companion_proposal po ON pe.id = po.preference_id WHERE po.proposal_status =3 AND pe.approval_status =1 AND pe.category>0 and po.tbc_type = 'X'");
     $row = $result->fetchObject();
     $book_count = $row->book_count;
-    $i = 1;
+    
     /* get preference */
     if ($category_default_value <= 0 && $subcategory_default_value == NULL)
     {
         $preference_q = db_query("SELECT DISTINCT pe.book, count( pe.book) c,tcbm.sub_category,tcbm.main_category as category_id,
       pe.author as author, pe.publisher as publisher, pe.year as year, pe.id as pe_id, pe.edition,
-      po.approval_date as approval_date
+      po.approval_date as approval_date, po.completion_date as completion_date, po.full_name as full_name, po.university as university
       FROM {textbook_companion_preference} pe
-      LEFT JOIN textbook_companion_proposal po ON pe.proposal_id = po.id
+      LEFT JOIN textbook_companion_proposal po ON pe.id = po.preference_id
       LEFT JOIN textbook_companion_book_main_subcategories tcbm ON pe.id = tcbm.pref_id
       LEFT JOIN list_of_category loc ON tcbm.main_category = loc.category_id
       WHERE po.proposal_status = 3 AND pe.approval_status = 1 AND pe.category>0
-      AND pe.id = tcbm.pref_id GROUP BY pe.id having c >= 1 ORDER BY pe.book");
+      AND pe.id = tcbm.pref_id AND po.tbc_type = :tbc_type GROUP BY pe.id having c >= 1 ORDER BY po.completion_date DESC", array(":tbc_type" => 'X'));
     } //$category_default_value <= 0 && $subcategory_default_value == NULL
     elseif ($category_default_value > 0 && $subcategory_default_value == NULL)
     {
         $preference_q = db_query("SELECT DISTINCT (loc.category_id),count( pe.book) c, tcbm.sub_category,loc.maincategory,
       pe.book as book, pe.author as author, pe.publisher as publisher, pe.year as year, pe.id as pe_id, pe.edition,
-      po.approval_date as approval_date
+      po.approval_date as approval_date, po.completion_date as completion_date, po.full_name as full_name, po.university as university
       FROM {textbook_companion_preference} pe
-      LEFT JOIN textbook_companion_proposal po ON pe.proposal_id = po.id
+      LEFT JOIN textbook_companion_proposal po ON pe.id = po.preference_id
       LEFT JOIN textbook_companion_book_main_subcategories tcbm ON pe.id = tcbm.pref_id
       LEFT JOIN list_of_category loc ON tcbm.main_category = loc.category_id
       WHERE po.proposal_status = 3 AND pe.approval_status = 1 AND pe.category>0
-      AND pe.id = tcbm.pref_id AND loc.category_id= :category_id GROUP BY pe.id having c >= 1 ORDER BY pe.book", array(
-            "category_id" => $category_default_value
+      AND pe.id = tcbm.pref_id AND loc.category_id= :category_id AND po.tbc_type = :tbc_type GROUP BY pe.id having c >= 1 ORDER BY po.completion_date DESC", array(
+            "category_id" => $category_default_value,
+            ":tbc_type" => 'X'
         ));
     } //$category_default_value > 0 && $subcategory_default_value == NULL
     else
     {
         $preference_q = db_query("SELECT DISTINCT (loc.category_id),tcbm.sub_category,loc.maincategory,
       pe.book as book, pe.author as author, pe.publisher as publisher, pe.year as year, pe.id as pe_id, pe.edition,
-      po.approval_date as approval_date
+      po.approval_date as approval_date, po.completion_date as completion_date, po.full_name as full_name, po.university as university
       FROM textbook_companion_preference pe
-      LEFT JOIN textbook_companion_proposal po ON pe.proposal_id = po.id
+      LEFT JOIN textbook_companion_proposal po ON pe.id = po.preference_id
       LEFT JOIN textbook_companion_book_main_subcategories tcbm ON pe.id = tcbm.pref_id
       LEFT JOIN list_of_category loc ON tcbm.main_category = loc.category_id
       WHERE po.proposal_status = 3 AND pe.approval_status = 1 AND pe.category>0
-      AND pe.id = tcbm.pref_id AND loc.category_id= :category_id AND tcbm.sub_category = :sub_category", array(
+      AND pe.id = tcbm.pref_id AND loc.category_id= :category_id AND tcbm.sub_category = :sub_category AND po.tbc_type = :tbc_type ORDER BY po.completion_date DESC", array(
             ":category_id" => $category_default_value,
-            ":sub_category" => $subcategory_default_value
+            ":sub_category" => $subcategory_default_value,
+            ":tbc_type" => 'X'
         ));
     }
+    $i = $preference_q->rowCount();
     while ($preference_data = $preference_q->fetchObject())
     {
         $proposal_rows[] = array(
             $i,
-            l($preference_data->book . " by " . $preference_data->author . ", " . $preference_data->publisher . ", " . $preference_data->year, 'textbook_run/' . $preference_data->pe_id . '/' . $preference_data->sub_category . '/' . $preference_data->category_id)
+            l($preference_data->book . " by " . $preference_data->author . ", " . $preference_data->publisher . ", " . $preference_data->year, 'xcos-textbook-companion/textbook-run/' . $preference_data->pe_id . '/' . $preference_data->sub_category . '/' . $preference_data->category_id),
+            $preference_data->full_name,
+            $preference_data->university,
+            date("Y", $preference_data->completion_date)
         );
-        $i++;
+        $i--;
     } //$proposal_data = $proposal_q->fetchObject()
     /* check if there are any pending proposals */
     if (!$proposal_rows)
@@ -461,7 +465,10 @@ function _list_of_all_completed_books($category_default_value = NULL, $subcatego
     {
         $proposal_header = array(
             'No.',
-            'Title of the Book'
+            'Title of the Book',
+            'Contributor Name',
+            'University / Institute',
+            'Year of Completion'
         );
         $output .= theme('table', array(
             'header' => $proposal_header,
@@ -471,7 +478,7 @@ function _list_of_all_completed_books($category_default_value = NULL, $subcatego
     //    $output .= "Book count with category: " . $book_count;
     return $output;
 }
-function _list_of_subcategory($category_id = NULL)
+function _xcos_list_of_subcategory($category_id = NULL)
 {
     $subcategory[0] = "Please select";
     if ($category_id == NULL)

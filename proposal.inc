@@ -12,9 +12,10 @@ function xcos_textbook_companion_proposal_all()
 	} //!$user->uid
 	/* check if user has already submitted a proposal */
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE uid = %d ORDER BY id DESC LIMIT 1", $user->uid);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('uid', $user->uid);
+	$query->condition('tbc_type', 'X');
 	$query->orderBy('id', 'DESC');
 	$query->range(0, 1);
 	$proposal_q = $query->execute();
@@ -162,7 +163,7 @@ function book_proposal_form($form, &$form_state)
 		'#prefix' => '<div id="ajax-country-list-replace">',
 		'#suffix' => '</div>',
 		'#ajax' => array(
-			'callback' => 'ajax_get_city_list_callback',
+			'callback' => 'ajax_get_xcos_city_list_callback',
 			),
 		'#required' => TRUE,
 		'#tree' => TRUE,
@@ -224,7 +225,7 @@ function book_proposal_form($form, &$form_state)
 		'#suffix' => '</div>',
 		'#required' => TRUE,
 		'#ajax' => array(
-			'callback' => 'ajax_get_district_list_callback',
+			'callback' => 'ajax_get_xcos_district_list_callback',
 			),
 		'#validated' => TRUE,
 		'#states' => array(
@@ -246,7 +247,7 @@ function book_proposal_form($form, &$form_state)
 		'#validated' => TRUE,
 		'#required' => TRUE,
 		'#ajax' => array(
-			'callback' => 'ajax_get_city_list_callback',
+			'callback' => 'ajax_get_xcos_city_list_callback',
 			),
 		'#states' => array(
 			'invisible' => array(
@@ -268,7 +269,7 @@ function book_proposal_form($form, &$form_state)
 		'#validated' => TRUE,
 		'#required' => TRUE,
 		'#ajax' => array(
-			'callback' => 'ajax_get_city_pincode_list_callback',
+			'callback' => 'ajax_get_xcos_city_pincode_list_callback',
 			),
 		'#states' => array(
 			'invisible' => array(
@@ -320,15 +321,12 @@ function book_proposal_form($form, &$form_state)
 		'#maxlength' => 50
 	);
 	$form['version'] = array(
-		'#type' => 'select',
+		'#type' => 'textfield',
 		'#title' => t('Scilab Version'),
-		'#options' => array(
-			'Scilab 6.1.0' => 'Scilab 6.1.0',
-		),
 		'#required' => TRUE,
-		//'#description' => t('Input version format should be like 5.4 or 5.4.1'),
-		/*'#size' => 10,
-		'#maxlength' => 20*/
+		'#description' => t('Input version format should be like 5.4 or 5.4.1'),
+		'#size' => 10,
+		'#maxlength' => 20
 	);
 	$form['expected_date_of_completion'] = array(
 		'#type' => 'date_popup',
@@ -506,7 +504,7 @@ function book_proposal_form_validate($form, &$form_state)
 function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 {
 	global $user;
-	$root_path = textbook_companion_samplecode_path();
+	$root_path = xcos_textbook_companion_samplecode_path();
 	$selections = variable_get("aicte_" . $user->uid, "");
 	$tbc_to_emails = variable_get("textbook_companion_emails_all");
 	$book_pref_id = $form_state['values']['tbc_title_list'];
@@ -544,29 +542,29 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 	/************************************/
 	$scilab_version = $form_state['values']['version'];
 	$query = "
-INSERT INTO {xcos_textbook_companion_proposal}
-    (uid, approver_uid, full_name, mobile, gender, how_project, branch, university, country, district, city, pincode, state, faculty, reviewer, reference, completion_date ,creation_date, approval_date, proposal_status, message, scilab_version, operating_system, teacher_email, proposal_type, reason, samplefilepath, proposed_completion_date) VALUES (:uid, :approver_uid, :full_name, :mobile, :gender, :how_project, :branch, :university, :country,:district, :city, :pincode, :state,
-:faculty, :reviewer, :reference,:completion_date, :creation_date, :approval_date, :proposal_status, :message, :scilab_version,
- :operating_system, :teacher_email, :proposal_type, :reason, :samplefilepath, :proposed_completion_date)
+INSERT INTO textbook_companion_proposal
+    (preference_id, uid, approver_uid, full_name, mobile, gender, how_project, branch, university, country, city, pincode, state, faculty, reviewer, completion_date ,creation_date, approval_date, proposal_status, message, scilab_version, operating_system, teacher_email, proposal_type, tbc_type, reason, samplefilepath, proposed_completion_date) 
+    VALUES (:preference_id, :uid, :approver_uid, :full_name, :mobile, :gender, :how_project, :branch, :university, :country, :city, :pincode, :state,
+:faculty, :reviewer, :completion_date, :creation_date, :approval_date, :proposal_status, :message, :scilab_version,
+ :operating_system, :teacher_email, :proposal_type, :tbc_type,:reason, :samplefilepath, :proposed_completion_date)
 ";
 	// $result = db_query($query);
 	$args = array(
+		":preference_id" => $form_state['values']['tbc_title_list'],
 		":uid" => $user->uid,
 		":approver_uid" => 0,
-		":full_name" => _tbc_sentence_case($form_state['values']['full_name']),
+		":full_name" => $form_state['values']['full_name'],
 		":mobile" => $form_state['values']['mobile'],
 		":gender" => $form_state['values']['gender'],
 		":how_project" => 'Not available',
 		":branch" => $form_state['values']['branch'],
 		":university" => $form_state['values']['university'],
 		":country" => $form_state['values']['country'],
-		":district" => $form_state['values']['district'],
 		":city" => $form_state['values']['city'],
 		":pincode" => $form_state['values']['pincode'],
 		":state" => $form_state['values']['all_state'],
-		":faculty" => _tbc_sentence_case($form_state['values']['faculty']),
-		":reviewer" => _tbc_sentence_case($form_state['values']['reviewer']),
-		":reference" => strtolower($form_state['values']['reference']),
+		":faculty" => $form_state['values']['faculty'],
+		":reviewer" => $form_state['values']['reviewer'],
 		":completion_date" => strtotime($form_state['values']['expected_date_of_completion']),
 		":creation_date" => time(),
 		":approval_date" => time(),
@@ -576,6 +574,7 @@ INSERT INTO {xcos_textbook_companion_proposal}
 		":operating_system" => $form_state['values']['operating_system'],
 		":teacher_email" => $form_state['values']['faculty_email'],
 		":proposal_type" => $scilab_proposal_data->proposal_type,
+		":tbc_type" => 'X',
 		":reason" => $scilab_proposal_data->reason,
 		":samplefilepath" => "",
 		":proposed_completion_date" => strtotime($form_state['values']['expected_date_of_completion'])
@@ -589,9 +588,9 @@ INSERT INTO {xcos_textbook_companion_proposal}
 		return;
 	} //!$result
 	/* proposal id */
-	$proposal_id = $result;
+	/*$proposal_id = $result;
 	/* inserting first book preference */
-	$query = "INSERT INTO {xcos_textbook_companion_preference}
+	/*$query = "INSERT INTO xcos_textbook_companion_preference
       (proposal_id, pref_number, book, author, isbn, publisher, edition, year, approval_status, nonaicte_book) VALUES
  (:proposal_id, :pref_number, :book, :author, :isbn, :publisher, :edition, :year, :approval_status, :nonaicte_book)";
 		$args = array(
@@ -611,7 +610,7 @@ INSERT INTO {xcos_textbook_companion_proposal}
 		if (!$result)
 		{
 			drupal_set_message(t('Error receiving your first book preference.'), 'error');
-		} //!$result
+		} //!$result*/
 	 //$form_state['values']['book1']
 	/* sending email */
 	$email_to = $user->mail;
@@ -635,7 +634,7 @@ INSERT INTO {xcos_textbook_companion_proposal}
 	drupal_goto('');
 }
 
-function ajax_get_city_list_callback($form, $form_state)
+function ajax_get_xcos_city_list_callback($form, $form_state)
 {
     $state_default_value = $form_state['values']['all_state'];
     $district_default_value = $form_state['values']['district'];
@@ -654,7 +653,7 @@ function ajax_get_city_list_callback($form, $form_state)
         '#commands' => $commands
     );
 }
-function ajax_get_district_list_callback($form, $form_state)
+function ajax_get_xcos_district_list_callback($form, $form_state)
 {
     $state_default_value = $form_state['values']['all_state'];
     if ($state_default_value != '0')
@@ -678,7 +677,7 @@ function ajax_get_district_list_callback($form, $form_state)
         '#commands' => $commands
     );
 }
-function ajax_get_city_pincode_list_callback($form, $form_state)
+function ajax_get_xcos_city_pincode_list_callback($form, $form_state)
 {
     $city_default_value = $form_state['values']['city'];
     $state_default_value = $form_state['values']['all_state'];

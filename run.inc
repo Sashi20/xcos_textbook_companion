@@ -4,8 +4,8 @@ function xcos_textbook_companion_run_form($form, &$form_state)
     $url_book_pref_id = (int) arg(2);
     //  var_dump($url_book_pref_id);die;
     if ($url_book_pref_id) {
-        $query = db_select('xcos_textbook_companion_preference');
-        $query->fields('xcos_textbook_companion_preference', array(
+        $query = db_select('textbook_companion_preference');
+        $query->fields('textbook_companion_preference', array(
             'category'
         ));
         $query->condition('id', $url_book_pref_id);
@@ -16,12 +16,12 @@ function xcos_textbook_companion_run_form($form, &$form_state)
     }
     if ($url_book_pref_id) {
         $form['category'] = array(
-            '#type' => 'hidden',
+            '#type' => 'select',
             '#title' => t('Category'),
-            '#options' => _list_of_category(),
+            '#options' => _xcos_list_of_category(),
             '#default_value' => $category_default_value,
             '#ajax' => array(
-                'callback' => 'ajax_book_list_callback'
+                'callback' => 'ajax_book_xcos_list_callback'
             ),
             '#validated' => TRUE
         );
@@ -29,12 +29,12 @@ function xcos_textbook_companion_run_form($form, &$form_state)
         $form['book'] = array(
             '#type' => 'select',
             '#title' => t('Title of the book'),
-            '#options' => _list_of_books($book_default_value),
+            '#options' => _xcos_list_of_books($book_default_value),
             '#default_value' => $book_default_value,
             '#prefix' => '<div id="ajax-book-list-replace">',
             '#suffix' => '</div>',
             '#ajax' => array(
-                'callback' => 'ajax_chapter_list_callback'
+                'callback' => 'ajax_chapter_xcos_list_callback'
             ),
             '#validated' => TRUE
         );
@@ -45,7 +45,7 @@ function xcos_textbook_companion_run_form($form, &$form_state)
         );*/
         $form['book_details'] = array(
             '#type' => 'item',
-            '#markup' => '<div id="ajax-book-details-replace">' . _html_book_info($book_default_value) . '</div>'
+            '#markup' => '<div id="ajax-book-details-replace">' . _xcos_html_book_info($book_default_value) . '</div>'
         );
         $form['download_book'] = array(
             '#type' => 'item',
@@ -70,7 +70,7 @@ function xcos_textbook_companion_run_form($form, &$form_state)
             '#prefix' => '<div id="ajax-chapter-list-replace">',
             '#suffix' => '</div>',
             '#ajax' => array(
-                'callback' => 'ajax_example_list_callback'
+                'callback' => 'ajax_example_xcos_list_callback'
             ),
             '#validated' => TRUE,
            /* '#states' => array(
@@ -114,24 +114,24 @@ function xcos_textbook_companion_run_form($form, &$form_state)
         );
     } else {
         $form['category'] = array(
-            '#type' => 'hidden',
+            '#type' => 'select',
             '#title' => t('Category'),
-            '#options' => _list_of_category(),
+            '#options' => _xcos_list_of_category(),
             '#default_value' => $category_default_value,
             '#ajax' => array(
-                'callback' => 'ajax_book_list_callback'
+                'callback' => 'ajax_book_xcos_list_callback'
             ),
             '#validated' => TRUE
         );
         $form['book'] = array(
             '#type' => 'select',
             '#title' => t('Title of the book'),
-            '#options' => _list_of_books(),
+            '#options' => _xcos_list_of_books(),
             //'#default_value' => isset($form_state['values']['book']) ? $form_state['values']['book'] : 0,
             '#prefix' => '<div id="ajax-book-list-replace">',
             '#suffix' => '</div>',
             '#ajax' => array(
-                'callback' => 'ajax_chapter_list_callback'
+                'callback' => 'ajax_chapter_xcos_list_callback'
             ),
             '#validated' => TRUE
             //'#states' => array('invisible' => array(':input[name="category"]' => array('value' => 0),),),  
@@ -161,7 +161,7 @@ function xcos_textbook_companion_run_form($form, &$form_state)
             '#prefix' => '<div id="ajax-chapter-list-replace">',
             '#suffix' => '</div>',
             '#ajax' => array(
-                'callback' => 'ajax_example_list_callback'
+                'callback' => 'ajax_example_xcos_list_callback'
             ),
             '#validated' => TRUE,
             '#states' => array(
@@ -207,20 +207,20 @@ function xcos_textbook_companion_run_form($form, &$form_state)
     return $form;
 }
 /********************* Ajax callback ***************************/
-function ajax_book_list_callback($form, $form_state)
+function ajax_book_xcos_list_callback($form, $form_state)
 {
     $category_default_value = $form_state['values']['category'];
     if ($category_default_value == 0) {
    
-        $form['book']['#options'] = _list_of_books($category_default_value);
+        $form['book']['#options'] = _xcos_list_of_books($category_default_value);
         $commands[] = ajax_command_replace("#ajax-book-list-replace", drupal_render($form['book']));
         $commands[] = ajax_command_html("#ajax-chapter-list-replace", '');
         $commands[] = ajax_command_html("#ajax-example-list-replace", '');
     } else {
     	 
-        $form['book']['#options'] = _list_of_books();
+        $form['book']['#options'] = _xcos_list_of_books();
         $commands[] = ajax_command_replace("#ajax-book-list-replace", drupal_render($form['book']));
-        $commands[] = ajax_command_html("#ajax-book-list-replace", '');
+        //$commands[] = ajax_command_html("#ajax-book-list-replace", '');
         $commands[] = ajax_command_html("#ajax-chapter-list-replace", '');
         $commands[] = ajax_command_html("#ajax-example-list-replace", '');
         $commands[] = ajax_command_html("#ajax-book-details-replace", '');
@@ -236,11 +236,11 @@ function ajax_book_list_callback($form, $form_state)
     );
 }
 /*************************************************************************/
-function ajax_chapter_list_callback($form, $form_state)
+function ajax_chapter_xcos_list_callback($form, $form_state)
 {
     $book_list_default_value = $form_state['values']['book'];
     if ($book_list_default_value > 0) {
-        $commands[] = ajax_command_html("#ajax-book-details-replace", _html_book_info($book_list_default_value));
+        $commands[] = ajax_command_html("#ajax-book-details-replace", _xcos_html_book_info($book_list_default_value));
         $form['chapter']['#options'] = _list_of_chapters($book_list_default_value);
         $commands[] = ajax_command_html("#ajax-download-book-replace", l('Download', 'xcos-textbook-companion/download/book/' . $book_list_default_value) . ' ' . t('(Download the Xcos codes for all the solved examples)'));
         $book_pref_id_array = array(
@@ -273,7 +273,7 @@ function ajax_chapter_list_callback($form, $form_state)
         '#commands' => $commands
     );
 }
-function ajax_example_list_callback($form, $form_state)
+function ajax_example_xcos_list_callback($form, $form_state)
 {
     $chapter_list_default_value = $form_state['values']['chapter'];
     if ($chapter_list_default_value > 0) {
@@ -301,8 +301,8 @@ function ajax_example_files_callback($form, $form_state)
     $example_list_default_value = $form_state['values']['examples'];
     if ($example_list_default_value != 0) {
         //  $example_list_q = db_query("SELECT * FROM {xcos_textbook_companion_example_files} WHERE example_id = %d", $form_state['values']['run']['example']);
-        $query = db_select('xcos_textbook_companion_example_files');
-        $query->fields('xcos_textbook_companion_example_files');
+        $query = db_select('textbook_companion_example_files');
+        $query->fields('textbook_companion_example_files');
         $query->condition('example_id', $example_list_default_value);
         $example_list_q = $query->execute();
         if ($example_list_q) {
@@ -373,7 +373,7 @@ function bootstrap_table_format($headers, $rows)
     return $table;
 }
 /***********************************************************************************/
-function _list_of_category()
+function _xcos_list_of_category()
 {
     $category_titles = array(
         0 => 'Please select category ...',
@@ -393,7 +393,7 @@ function _list_of_category()
     );
     return $category_titles;
 }
-function _list_of_books($preference_id = NULL)
+function _xcos_list_of_books($preference_id = NULL)
 {
     if ($preference_id != NULL) {
         $book_titles = array(
@@ -402,16 +402,17 @@ function _list_of_books($preference_id = NULL)
         // $book_titles_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE category=".$category_default_value." AND approval_status = 1 OR approval_status = 3 ORDER BY book ASC");
         // $book_titles_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE category=".$category_default_value." AND approval_status = 1 AND proposal_id IN (SELECT id FROM xcos_textbook_companion_proposal WHERE proposal_status=3) ORDER BY book ASC");
         // var_dump('ok= '. $category_default_value);
-        $query = db_select('xcos_textbook_companion_preference');
-        $query->fields('xcos_textbook_companion_preference');
-        $query->condition('id', $preference_id);
-        $query->condition('approval_status', 1);
-        $subquery = db_select('xcos_textbook_companion_proposal');
-        $subquery->fields('xcos_textbook_companion_proposal', array(
-            'id'
+        $subquery = db_select('textbook_companion_proposal');
+        $subquery->fields('textbook_companion_proposal', array(
+            'id', 'preference_id'
         ));
         $subquery->condition('proposal_status', 3);
-        $query->condition('proposal_id', $subquery, 'IN');
+        $subquery->condition('tbc_type', 'X');
+        $query = db_select('textbook_companion_preference');
+        $query->fields('textbook_companion_preference');
+        //$query->condition('id', $preference_id);
+        $query->condition('approval_status', 1);
+        $subquery->condition('id', $query, 'IN');
         $query->orderBy('book', 'ASC');
         $book_titles_q = $query->execute();
         while ($book_titles_data = $book_titles_q->fetchObject()) {
@@ -424,16 +425,17 @@ function _list_of_books($preference_id = NULL)
         // $book_titles_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE category=".$category_default_value." AND approval_status = 1 OR approval_status = 3 ORDER BY book ASC");
         // $book_titles_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE category=".$category_default_value." AND approval_status = 1 AND proposal_id IN (SELECT id FROM xcos_textbook_companion_proposal WHERE proposal_status=3) ORDER BY book ASC");
         // var_dump('ok= '. $category_default_value);
-        $query = db_select('xcos_textbook_companion_preference');
-        $query->fields('xcos_textbook_companion_preference');
-        //$query->condition('id', $preference_id);
-        $query->condition('approval_status', 1);
-        $subquery = db_select('xcos_textbook_companion_proposal');
-        $subquery->fields('xcos_textbook_companion_proposal', array(
-            'id'
+        $subquery = db_select('textbook_companion_proposal');
+        $subquery->fields('textbook_companion_proposal', array(
+            'id', 'preference_id'
         ));
         $subquery->condition('proposal_status', 3);
-        $query->condition('proposal_id', $subquery, 'IN');
+        $subquery->condition('tbc_type', 'X');
+        $query = db_select('textbook_companion_preference');
+        $query->fields('textbook_companion_preference');
+        //$query->condition('id', $preference_id);
+        $query->condition('approval_status', 1);
+        $subquery->condition('id', $query, 'IN');
         $query->orderBy('book', 'ASC');
         $book_titles_q = $query->execute();
         while ($book_titles_data = $book_titles_q->fetchObject()) {
@@ -450,8 +452,8 @@ function _list_of_chapters($preference_id)
         0 => 'Please select...'
     );
     //$book_chapters_q = db_query("SELECT * FROM {xcos_textbook_companion_chapter} WHERE preference_id = %d ORDER BY number ASC", $preference_id);
-    $query = db_select('xcos_textbook_companion_chapter');
-    $query->fields('xcos_textbook_companion_chapter');
+    $query = db_select('textbook_companion_chapter');
+    $query->fields('textbook_companion_chapter');
     $query->condition('preference_id', $preference_id);
     $query->orderBy('number', 'ASC');
     $book_chapters_q = $query->execute();
@@ -470,8 +472,8 @@ function _list_of_examples($chapter_id = 0)
     // CAST(SUBSTRING_INDEX(number, '.', 1) AS BINARY) ASC,
     // CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(number , '.', 2), '.', -1) AS UNSIGNED) ASC,
     //  CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(number , '.', -1), '.', 1) AS UNSIGNED) ASC", $chapter_id);
-    $query = db_select('xcos_textbook_companion_example');
-    $query->fields('xcos_textbook_companion_example');
+    $query = db_select('textbook_companion_example');
+    $query->fields('textbook_companion_example');
     $query->condition('chapter_id', $chapter_id);
     $query->condition('approval_status', 1);
     //$query->orderBy('', '');
@@ -487,7 +489,7 @@ function _book_information($preference_id)
     preference.book as preference_book, preference.author as preference_author, preference.isbn as preference_isbn, preference.publisher as preference_publisher, preference.edition as preference_edition, preference.year as preference_year,
     proposal.full_name as proposal_full_name, proposal.faculty as proposal_faculty, proposal.reviewer as proposal_reviewer, proposal.branch as proposal_branch, proposal.university as proposal_university
     FROM {xcos_textbook_companion_proposal} proposal LEFT JOIN {xcos_textbook_companion_preference} preference ON proposal.id = preference.proposal_id WHERE preference.id = %d", $preference_id));*/
-    $query = db_select('xcos_textbook_companion_proposal', 'proposal');
+    $query = db_select('textbook_companion_proposal', 'proposal');
     $query->fields('preference', array(
         'book',
         'author',
@@ -508,13 +510,13 @@ function _book_information($preference_id)
     $book_data = $query->execute()->fetchObject();
     return $book_data;
 }
-function _html_book_info($preference_id)
+function _xcos_html_book_info($preference_id)
 {
     /*$book_details = db_fetch_object(db_query("SELECT
     preference.book as preference_book, preference.author as preference_author, preference.isbn as preference_isbn, preference.publisher as preference_publisher, preference.edition as preference_edition, preference.year as preference_year,
     proposal.full_name as proposal_full_name, proposal.faculty as proposal_faculty, proposal.reviewer as proposal_reviewer, proposal.course as proposal_course, proposal.branch as proposal_branch, proposal.university as proposal_university
     FROM {xcos_textbook_companion_proposal} proposal LEFT JOIN {xcos_textbook_companion_preference} preference ON proposal.id = preference.proposal_id WHERE preference.id=".$preference_id));*/
-    $query = db_select('xcos_textbook_companion_proposal', 'proposal');
+    $query = db_select('textbook_companion_proposal', 'proposal');
     $query->addField('preference', 'book', 'preference_book');
     $query->addField('preference', 'author', 'preference_author');
     $query->addField('preference', 'isbn', 'preference_isbn');
@@ -533,7 +535,7 @@ function _html_book_info($preference_id)
         'branch',
         'university'
     ));
-    $query->leftJoin('xcos_textbook_companion_preference', 'preference', 'proposal.id = preference.proposal_id');
+    $query->leftJoin('xcos_textbook_companion_preference', 'preference', 'proposal.preference_id = preference.id');
     $query->fields('preference', array(
         'book',
         'author',

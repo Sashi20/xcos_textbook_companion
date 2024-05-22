@@ -24,7 +24,7 @@ function xcos_textbook_companion_menu()
     );
 	$items['xcos-textbook-companion/completed-books'] = array(
 		'title' => 'Completed Books',
-		'page callback' => 'xcos_completed_books',
+		'page callback' => 'xcos_tbc_completed_books_display_new_category_all',
 		'access arguments' => array(
 		'display xcos books in progress'
 		),
@@ -883,7 +883,7 @@ function xcos_textbook_companion_aicte_proposal_all()
 		WHERE status = 0
 		";
 		$result = db_query($query);*/
-		$query = db_select('xcos_textbook_companion_aicte');
+		$query = db_select('textbook_companion_aicte');
 		$query->fields('xcos_textbook_companion_aicte');
 		$query->condition('status', 0);
 		$result = $query->execute();
@@ -935,8 +935,8 @@ function xcos_textbook_companion_aicte_proposal_all()
 	} //!$user->uid
 	/* check if user has already submitted a proposal */
 	/* $proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE uid = %d ORDER BY id DESC LIMIT 1", $user->uid);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('uid', $user->uid);
 	$query->orderBy('id', 'DESC');
 	$query->range(0, 1);
@@ -994,8 +994,8 @@ function xcos_textbook_companion_nonaicte_proposal_all()
 	} //!$user->uid
 	/* check if user has already submitted a proposal */
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE uid = %d ORDER BY id DESC LIMIT 1", $user->uid);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('uid', $user->uid);
 	$query->orderBy('id', 'DESC');
 	$query->range(0, 1);
@@ -1058,8 +1058,8 @@ function xcos_textbook_companion_mail($key, &$message, $params)
 			/* initializing data */
 			/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE id = %d LIMIT 1", $params['proposal_received']['proposal_id']);
 			$proposal_data = db_fetch_object($proposal_q);*/
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $params['proposal_received']['proposal_id']);
 			$query->range(0, 1);
 			$result = $query->execute();
@@ -1075,22 +1075,22 @@ function xcos_textbook_companion_mail($key, &$message, $params)
 			}
 			/*$preference1_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND pref_number = %d LIMIT 1", $params['proposal_received']['proposal_id'], 1);
 			$preference1_data = db_fetch_object($preference1_q);*/
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('proposal_id', $params['proposal_received']['proposal_id']);
 			$query->condition('pref_number', 1);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference1_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('proposal_id', $params['proposal_received']['proposal_id']);
 			$query->condition('pref_number', 2);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference2_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('proposal_id', $params['proposal_received']['proposal_id']);
 			$query->condition('pref_number', 3);
 			$query->range(0, 1);
@@ -1140,16 +1140,16 @@ FOSSEE, IIT Bombay', array(
 			/* initializing data */
 			/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE id = %d LIMIT 1", $params['proposal_disapproved']['proposal_id']);
 			$proposal_data = db_fetch_object($proposal_q);*/
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $params['proposal_disapproved']['proposal_id']);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$proposal_data = $result->fetchObject();
 			/*$preference1_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND pref_number = %d LIMIT 1", $params['proposal_disapproved']['proposal_id'], 1);
 			$preference1_data = db_fetch_object($preference1_q);*/
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('proposal_id', $params['proposal_disapproved']['proposal_id']);
 			$query->condition('pref_number', 1);
 			$query->range(0, 1);
@@ -1184,16 +1184,16 @@ FOSSEE, IIT Bombay', array(
 		
 			/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE id = %d LIMIT 1", $params['proposal_approved']['proposal_id']);
 			$proposal_data = db_fetch_object($proposal_q);*/
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $params['proposal_approved']['proposal_id']);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$proposal_data = $result->fetchObject();
 			/* $approved_preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $params['proposal_approved']['proposal_id']);
 			$approved_preference_data = db_fetch_object($approved_preference_q);*/
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('proposal_id', $params['proposal_approved']['proposal_id']);
 			$query->condition('approval_status', 1);
 			$query->range(0, 1);
@@ -1244,16 +1244,16 @@ FOSSEE, IIT Bombay', array(
 			
 			/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE id = %d LIMIT 1", $params['proposal_completed']['proposal_id']);
 			$proposal_data = db_fetch_object($proposal_q);*/
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $params['proposal_completed']['proposal_id']);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$proposal_data = $result->fetchObject();
 			/*$approved_preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $params['proposal_completed']['proposal_id']);
 			$approved_preference_data = db_fetch_object($approved_preference_q);*/
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('proposal_id', $params['proposal_completed']['proposal_id']);
 			$query->condition('approval_status', 1);
 			$query->range(0, 1);
@@ -1302,16 +1302,16 @@ FOSSEE, IIT Bombay', array(
 		case 'all_code_submitted':
 			/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE id = %d LIMIT 1", $params['proposal_completed']['proposal_id']);
 			$proposal_data = db_fetch_object($proposal_q);*/
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $params['all_code_submitted']['proposal_id']);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$proposal_data = $result->fetchObject();
 			/*$approved_preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $params['proposal_completed']['proposal_id']);
 			$approved_preference_data = db_fetch_object($approved_preference_q);*/
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('proposal_id', $params['all_code_submitted']['proposal_id']);
 			$query->condition('approval_status', 1);
 			$query->range(0, 1);
@@ -1360,16 +1360,16 @@ FOSSEE, IIT Bombay', array(
 
 			/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE id = %d LIMIT 1", $params['proposal_completed']['proposal_id']);
 			$proposal_data = db_fetch_object($proposal_q);*/
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $params['all_code_submitted_status_changed']['proposal_id']);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$proposal_data = $result->fetchObject();
 			/*$approved_preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $params['proposal_completed']['proposal_id']);
 			$approved_preference_data = db_fetch_object($approved_preference_q);*/
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('proposal_id', $params['all_code_submitted_status_changed']['proposal_id']);
 			$query->condition('approval_status', 1);
 			$query->range(0, 1);
@@ -1417,26 +1417,26 @@ FOSSEE, IIT Bombay', array(
 
 			/*$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE id = %d LIMIT 1", $params['example_uploaded']['example_id']);
 			$example_data = db_fetch_object($example_q);*/
-			$query = db_select('xcos_textbook_companion_example');
-			$query->fields('xcos_textbook_companion_example');
+			$query = db_select('textbook_companion_example');
+			$query->fields('textbook_companion_example');
 			$query->condition('id', $params['example_uploaded']['example_id']);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$example_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_chapter');
-			$query->fields('xcos_textbook_companion_chapter');
+			$query = db_select('textbook_companion_chapter');
+			$query->fields('textbook_companion_chapter');
 			$query->condition('id', $example_data->chapter_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$chapter_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('id', $chapter_data->preference_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $preference_data->proposal_id);
 			$query->range(0, 1);
 			$result = $query->execute();
@@ -1471,26 +1471,26 @@ FOSSEE, IIT Bombay', array(
 		case 'example_updated':
 			/*$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE id = %d LIMIT 1", $params['example_updated']['example_id']);
 			$example_data = db_fetch_object($example_q);*/
-			$query = db_select('xcos_textbook_companion_example');
-			$query->fields('xcos_textbook_companion_example');
+			$query = db_select('textbook_companion_example');
+			$query->fields('textbook_companion_example');
 			$query->condition('id', $params['example_updated']['example_id']);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$example_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_chapter');
-			$query->fields('xcos_textbook_companion_chapter');
+			$query = db_select('textbook_companion_chapter');
+			$query->fields('textbook_companion_chapter');
 			$query->condition('id', $example_data->chapter_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$chapter_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('id', $chapter_data->preference_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $preference_data->proposal_id);
 			$query->range(0, 1);
 			$result = $query->execute();
@@ -1525,26 +1525,26 @@ FOSSEE, IIT Bombay', array(
 		case 'example_updated_admin':
 			/*$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE id = %d LIMIT 1", $params['example_updated_admin']['example_id']);
 			$example_data = db_fetch_object($example_q);*/
-			$query = db_select('xcos_textbook_companion_example');
-			$query->fields('xcos_textbook_companion_example');
+			$query = db_select('textbook_companion_example');
+			$query->fields('textbook_companion_example');
 			$query->condition('id', $params['example_updated_admin']['example_id']);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$example_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_chapter');
-			$query->fields('xcos_textbook_companion_chapter');
+			$query = db_select('textbook_companion_chapter');
+			$query->fields('textbook_companion_chapter');
 			$query->condition('id', $example_data->chapter_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$chapter_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('id', $chapter_data->preference_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $preference_data->proposal_id);
 			$query->range(0, 1);
 			$result = $query->execute();
@@ -1578,26 +1578,26 @@ FOSSEE, IIT Bombay', array(
 			
 			/*$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE id = %d LIMIT 1", $params['example_approved']['example_id']);
 			$example_data = db_fetch_object($example_q);*/
-			$query = db_select('xcos_textbook_companion_example');
-			$query->fields('xcos_textbook_companion_example');
+			$query = db_select('textbook_companion_example');
+			$query->fields('textbook_companion_example');
 			$query->condition('id', $params['example_approved']['example_id']);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$example_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_chapter');
-			$query->fields('xcos_textbook_companion_chapter');
+			$query = db_select('textbook_companion_chapter');
+			$query->fields('textbook_companion_chapter');
 			$query->condition('id', $example_data->chapter_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$chapter_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('id', $chapter_data->preference_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $preference_data->proposal_id);
 			$query->range(0, 1);
 			$result = $query->execute();
@@ -1632,20 +1632,20 @@ FOSSEE, IIT Bombay', array(
 			$user_data = user_load($params['example_disapproved']['user_id']);
 			$preference_id = $params['example_disapproved']['preference_id'];
 			$chapter_id = $params['example_disapproved']['chapter_id'];
-			$query = db_select('xcos_textbook_companion_chapter');
-			$query->fields('xcos_textbook_companion_chapter');
+			$query = db_select('textbook_companion_chapter');
+			$query->fields('textbook_companion_chapter');
 			$query->condition('id', $chapter_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$chapter_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('id', $preference_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $preference_data->proposal_id);
 			$query->range(0, 1);
 			$result = $query->execute();
@@ -1682,20 +1682,20 @@ FOSSEE, IIT Bombay', array(
 			//var_dump($user_data);die;
 			$preference_id = $params['example_deleted_user']['preference_id'];
 			$chapter_id = $params['example_deleted_user']['chapter_id'];
-			$query = db_select('xcos_textbook_companion_chapter');
-			$query->fields('xcos_textbook_companion_chapter');
+			$query = db_select('textbook_companion_chapter');
+			$query->fields('textbook_companion_chapter');
 			$query->condition('id', $chapter_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$chapter_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_preference');
-			$query->fields('xcos_textbook_companion_preference');
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
 			$query->condition('id', $preference_id);
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
-			$query = db_select('xcos_textbook_companion_proposal');
-			$query->fields('xcos_textbook_companion_proposal');
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
 			$query->condition('id', $preference_data->proposal_id);
 			$query->range(0, 1);
 			$result = $query->execute();
@@ -1921,8 +1921,8 @@ function xcos_textbook_companion_ajax()
 		$chapter_number = arg(3);
 		$preference_id = arg(4);
 		/*$chapter_q = db_query("SELECT * FROM {xcos_textbook_companion_chapter} WHERE number = %d AND preference_id = %d LIMIT 1", $chapter_number, $preference_id);*/
-		$query = db_select('xcos_textbook_companion_chapter');
-		$query->fields('xcos_textbook_companion_chapter');
+		$query = db_select('textbook_companion_chapter');
+		$query->fields('textbook_companion_chapter');
 		$query->condition('number', $chapter_number);
 		$query->condition('preference_id', $preference_id);
 		$query->range(0, 1);
@@ -1940,8 +1940,8 @@ function xcos_textbook_companion_ajax()
 		$example_number = arg(5);
 		$chapter_id = 0;
 		/* $chapter_q = db_query("SELECT * FROM {xcos_textbook_companion_chapter} WHERE number = %d AND preference_id = %d LIMIT 1", $chapter_number, $preference_id);*/
-		$query = db_select('xcos_textbook_companion_chapter');
-		$query->fields('xcos_textbook_companion_chapter');
+		$query = db_select('textbook_companion_chapter');
+		$query->fields('textbook_companion_chapter');
 		$query->condition('number', $chapter_number);
 		$query->condition('preference_id', $preference_id);
 		$query->range(0, 1);
@@ -1956,8 +1956,8 @@ function xcos_textbook_companion_ajax()
 			$chapter_id = $chapter_data->id;
 		}
 		/*$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE chapter_id = %d AND number = '%s' LIMIT 1", $chapter_id, $example_number);*/
-		$query = db_select('xcos_textbook_companion_example');
-		$query->fields('xcos_textbook_companion_example');
+		$query = db_select('textbook_companion_example');
+		$query->fields('textbook_companion_example');
 		$query->condition('chapter_id', $chapter_id);
 		$query->condition('number', $example_number);
 		$query->range(0, 1);
@@ -2017,8 +2017,8 @@ function xcos_delete_example($example_id)
 	$status = TRUE;
 	/*$example_q = db_query("SELECT * FROM {textbook_companion_example} WHERE id = %d", $example_id);
 	$example_data = db_fetch_object($example_q);*/
-	$query = db_select('xcos_textbook_companion_example');
-	$query->fields('xcos_textbook_companion_example');
+	$query = db_select('textbook_companion_example');
+	$query->fields('textbook_companion_example');
 	$query->condition('id', $example_id);
 	$example_q = $query->execute();
 	$example_data = $example_q->fetchObject();
@@ -2029,8 +2029,8 @@ function xcos_delete_example($example_id)
 	} //!$example_data
 	/*$chapter_q = db_query("SELECT * FROM {textbook_companion_chapter} WHERE id = %d", $example_data->chapter_id);
 	$chapter_data = db_fetch_object($chapter_q);*/
-	$query = db_select('xcos_textbook_companion_chapter');
-	$query->fields('xcos_textbook_companion_chapter');
+	$query = db_select('textbook_companion_chapter');
+	$query->fields('textbook_companion_chapter');
 	$query->condition('id', $example_data->chapter_id);
 	$chapter_q = $query->execute();
 	$chapter_data = $chapter_q->fetchObject();
@@ -2041,8 +2041,8 @@ function xcos_delete_example($example_id)
 	} //!$chapter_data
 	/* deleting example files */
 	/*$examples_files_q = db_query("SELECT * FROM {textbook_companion_example_files} WHERE example_id = %d", $example_id);*/
-	$query = db_select('xcos_textbook_companion_example_files');
-	$query->fields('xcos_textbook_companion_example_files');
+	$query = db_select('textbook_companion_example_files');
+	$query->fields('textbook_companion_example_files');
 	$query->condition('example_id', $example_id);
 	$examples_files_q = $query->execute();
 	while ($examples_files_data = $examples_files_q->fetchObject())
@@ -2078,7 +2078,7 @@ function xcos_delete_example($example_id)
 		{
 			/* deleting example files database entries */
 			/*db_query("DELETE FROM {textbook_companion_example_files} WHERE id = %d", $examples_files_data->id);*/
-			$query = db_delete('xcos_textbook_companion_example_files');
+			$query = db_delete('textbook_companion_example_files');
 			$query->condition('id', $examples_files_data->id);
 			$num_deleted = $query->execute();
 		}
@@ -2115,11 +2115,9 @@ function xcos_delete_example($example_id)
 	}
 	/* deleting example dependency and exmaple database entries */
 	/*db_query("DELETE FROM {textbook_companion_example_dependency} WHERE example_id = %d", $example_id);*/
-	$query = db_delete('xcos_textbook_companion_example_dependency');
-	$query->condition('example_id', $example_id);
-	$num_deleted = $query->execute();
+	
 	/*db_query("DELETE FROM {textbook_companion_example} WHERE id = %d", $example_id);*/
-	$query = db_delete('xcos_textbook_companion_example');
+	$query = db_delete('textbook_companion_example');
 	$query->condition('id', $example_id);
 	$num_deleted = $query->execute();
 	return $status;
@@ -2130,8 +2128,8 @@ function xcos_delete_chapter($chapter_id)
 	$root_path = xcos_textbook_companion_path();
 	/*$chapter_q = db_query("SELECT * FROM {textbook_companion_chapter} WHERE id = %d", $chapter_id);
 	$chapter_data = db_fetch_object($chapter_q);*/
-	$query = db_select('xcos_textbook_companion_chapter');
-	$query->fields('xcos_textbook_companion_chapter');
+	$query = db_select('textbook_companion_chapter');
+	$query->fields('textbook_companion_chapter');
 	$query->condition('id', $chapter_id);
 	$chapter_q = $query->execute();
 	$chapter_data = $chapter_q->fetchObject();
@@ -2142,8 +2140,8 @@ function xcos_delete_chapter($chapter_id)
 	} //!$chapter_data
 	/* deleting examples */
 	/*$example_q = db_query("SELECT * FROM {textbook_companion_example} WHERE chapter_id = %d", $chapter_id);*/
-	$query = db_select('xcos_textbook_companion_example');
-	$query->fields('xcos_textbook_companion_example');
+	$query = db_select('textbook_companion_example');
+	$query->fields('textbook_companion_example');
 	$query->condition('chapter_id', $chapter_id);
 	$example_q = $query->execute();
 	while ($example_data = $example_q->fetchObject())
@@ -2174,7 +2172,7 @@ function xcos_delete_chapter($chapter_id)
 			{
 				/* deleting chapter details from database */
 				/*db_query("DELETE FROM {textbook_companion_chapter} WHERE id = %d", $chapter_id);*/
-				$query = db_delete('xcos_textbook_companion_chapter');
+				$query = db_delete('textbook_companion_chapter');
 				$query->condition('id', $chapter_id);
 				$num_deleted = $query->execute();
 				return TRUE;
@@ -2196,8 +2194,8 @@ function xcos_delete_book($book_id)
 	$root_path = xcos_textbook_companion_path();
 	/*$preference_q = db_query("SELECT * FROM {textbook_companion_preference} WHERE id = %d", $book_id);
 	$preference_data = db_fetch_object($preference_q);*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('id', $book_id);
 	$preference_q = $query->execute();
 	$preference_data = $preference_q->fetchObject();
@@ -2208,7 +2206,7 @@ function xcos_delete_book($book_id)
 	} //!$preference_data
 	/* delete chapters */
 	/*$chapter_q = db_query("SELECT * FROM {textbook_companion_chapter} WHERE preference_id = %d", $preference_data->id);*/
-	$query = db_select('xcos_textbook_companion_dependency_files');
+	$query = db_select('textbook_companion_dependency_files');
 		$query->fields('xcos_textbook_companion_dependency_files');
 		$query->condition('preference_id', $preference_data->id);
 		$result = $query->execute();
@@ -2228,8 +2226,8 @@ function xcos_delete_book($book_id)
 		{
 			$res = rmdir($dir_path);
 		}
-	$query = db_select('xcos_textbook_companion_chapter');
-	$query->fields('xcos_textbook_companion_chapter');
+	$query = db_select('textbook_companion_chapter');
+	$query->fields('textbook_companion_chapter');
 	$query->condition('preference_id', $preference_data->id);
 	$chapter_q = $query->execute();
 	while ($chapter_data = $chapter_q->fetchObject())
@@ -2246,8 +2244,8 @@ function xcos_delete_file($file_id)
 {
 	$root_path = xcos_textbook_companion_path();
 	/*$file_q = db_query("SELECT * FROM {textbook_companion_example_files} WHERE id = %d LIMIT 1", $file_id);*/
-	$query = db_select('xcos_textbook_companion_example_files');
-	$query->fields('xcos_textbook_companion_example_files');
+	$query = db_select('textbook_companion_example_files');
+	$query->fields('textbook_companion_example_files');
 	$query->condition('id', $file_id);
 	$query->range(0, 1);
 	$file_q = $query->execute();
@@ -2284,7 +2282,7 @@ function xcos_delete_file($file_id)
 	{
 		/* deleting example files database entries */
 		/*db_query("DELETE FROM {textbook_companion_example_files} WHERE id = %d", $file_id);*/
-		$query = db_delete('xcos_textbook_companion_example_files');
+		$query = db_delete('textbook_companion_example_files');
 		$query->condition('id', $file_id);
 		$num_deleted = $query->execute();
 		return TRUE;
@@ -2295,8 +2293,8 @@ function del_xcos_book_pdf($book_id)
 {
 	$root_path = xcos_textbook_companion_path();
 	$dir_path = $root_path . "latex/";
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('id', $book_id);
 	$query_pre_data = $query->execute();
 	$result = $query_pre_data->fetchObject();
@@ -2375,8 +2373,8 @@ function _xcos_dir_name($book, $author, $pref_id)
 		$author = xcos_ucname($author);
 		$dir_name = $book_title . " " . "by" . " " . $author;
 		$directory_name = str_replace("__", "_", preg_replace('/[^a-zA-Z0-9-_]/', "_", $dir_name));
-		$query = db_select('xcos_textbook_companion_preference');
-		$query->fields('xcos_textbook_companion_preference');
+		$query = db_select('textbook_companion_preference');
+		$query->fields('textbook_companion_preference');
 		$query->condition('directory_name', $directory_name);
 		$query->condition('approval_status', 1);
 		$result = $query->execute()->rowCount();
@@ -2393,8 +2391,8 @@ function _xcos_dir_name($book, $author, $pref_id)
 		$author = xcos_ucname($author);
 		$dir_name = $book_title . " " . "by" . " " . $author;
 		$directory_name = str_replace("__", "_", preg_replace('/[^a-zA-Z0-9-_]/', "_", $dir_name));
-		$query = db_select('xcos_textbook_companion_preference');
-		$query->fields('xcos_textbook_companion_preference');
+		$query = db_select('textbook_companion_preference');
+		$query->fields('textbook_companion_preference');
 		$query->condition('directory_name', $directory_name);
 		$query->condition('id', $pref_id);
 		$result = $query->execute()->rowCount();
@@ -2464,9 +2462,10 @@ function _xcos_tbc_list_of_states()
 function _xcos_list_of_book_titles()
 {
    $existing_tbc_titles = array();
-    $result = db_query("SELECT * from list_of_xcos_tbc_titles WHERE {tbc_name} NOT IN( SELECT  CONCAT(book, ' by ', author, ', ', publisher, ', ', year) from xcos_textbook_companion_preference as xtcp JOIN xcos_textbook_companion_proposal as xtcc ON xtcp.proposal_id = xtcc.id WHERE xtcc.proposal_status = 0 OR xtcc.proposal_status = 1 OR xtcc.proposal_status = 3) ORDER BY tbc_name ASC");
+    $result = db_query("SELECT xtcp.id, CONCAT(xtcp.book, ' by ', xtcp.author, ', ', xtcp.publisher, ', ', xtcp.year) as book_name from textbook_companion_preference as xtcp JOIN textbook_companion_proposal as xtcc ON xtcp.id = xtcc.preference_id WHERE xtcc.proposal_status = 3 and xtcc.tbc_type = 'S' and CONCAT(book, ' by ', author, ', ', publisher, ', ', year) NOT IN ( SELECT  CONCAT(book, ' by ', author, ', ', publisher, ', ', year) from textbook_companion_preference as xtcp JOIN textbook_companion_proposal as xtcc ON xtcp.id = xtcc.preference_id WHERE xtcc.proposal_status = 0 OR xtcc.proposal_status = 1 OR xtcc.proposal_status = 3 and xtcc.tbc_type = 'X') ORDER BY book ASC");
+    //var_dump($result->rowCount());die;
     while ($existing_tbc_titles_data = $result->fetchObject()) {
-        $existing_tbc_titles[$existing_tbc_titles_data->scilab_tbc_pref_id] = $existing_tbc_titles_data->tbc_name;
+        $existing_tbc_titles[$existing_tbc_titles_data->id] = $existing_tbc_titles_data->book_name;
     }
     return $existing_tbc_titles;
 }
@@ -2476,7 +2475,7 @@ function _list_of_xcos_book_dependency_files()
 	$book_dependency_files = array();
 	$book_dependency_files_class = array();
 	/*$book_dependency_files_q = db_query("SELECT * FROM {xcos_textbook_companion_dependency_files} ORDER BY filename ASC");*/
-	$query = db_select('xcos_textbook_companion_dependency_files', 'tcdp');
+	$query = db_select('textbook_companion_dependency_files', 'tcdp');
 	$query->fields('tcdp');
 	$query->fields('tcp', array(
 		'book',

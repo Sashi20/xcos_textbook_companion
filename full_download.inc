@@ -9,8 +9,8 @@ function xcos_textbook_companion_download_full_chapter()
 	/* get example data */
 	/*$chapter_q = db_query("SELECT * FROM {xcos_textbook_companion_chapter} WHERE id = %d", $chapter_id);
 	$chapter_data = db_fetch_object($chapter_q);*/
-	$query = db_select('xcos_textbook_companion_chapter');
-	$query->fields('xcos_textbook_companion_chapter');
+	$query = db_select('textbook_companion_chapter');
+	$query->fields('textbook_companion_chapter');
 	$query->condition('id', $chapter_id);
 	$chapter_q = $query->execute();
 	$chapter_data = $chapter_q->fetchObject();
@@ -22,21 +22,21 @@ function xcos_textbook_companion_download_full_chapter()
 	$zip->open($zip_filename, ZipArchive::CREATE);
 	/* approved examples */
 	/*$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE chapter_id = %d AND approval_status = 1", $chapter_id);*/
-	$query = db_select('xcos_textbook_companion_example');
-	$query->fields('xcos_textbook_companion_example');
+	$query = db_select('textbook_companion_example');
+	$query->fields('textbook_companion_example');
 	$query->condition('chapter_id', $chapter_id);
-	$query->condition('approval_status', 1);
+	$query->condition('xcos_approval_status', 1);
 	$example_q = $query->execute();
 	while ($example_row = $example_q->fetchObject())
 	{
 		$EX_PATH = 'EX' . $example_row->number . '/';
 		/*$example_files_q = db_query("SELECT * FROM {xcos_textbook_companion_example_files} WHERE example_id = %d", $example_row->id);*/
-		$query = db_select('xcos_textbook_companion_example_files');
-		$query->fields('xcos_textbook_companion_example_files');
+		$query = db_select('textbook_companion_example_files');
+		$query->fields('textbook_companion_example_files');
 		$query->condition('example_id', $example_row->id);
 		$example_files_q = $query->execute();
 		/*$example_dependency_files_q = db_query("SELECT * FROM {xcos_textbook_companion_example_dependency} WHERE example_id = %d", $example_row->id);*/
-		$query = db_select('xcos_textbook_companion_example_dependency');
+		$query = db_select('textbook_companion_example_dependency');
 		$query->fields('xcos_textbook_companion_example_dependency');
 		$query->condition('example_id', $example_row->id);
 		$example_dependency_files_q = $query->execute();
@@ -48,7 +48,7 @@ function xcos_textbook_companion_download_full_chapter()
 		while ($example_dependency_files_row = $example_dependency_files_q->fetchObject())
 		{
 			/*$dependency_file_data = db_fetch_object(db_query("SELECT * FROM {xcos_textbook_companion_dependency_files} WHERE id = %d LIMIT 1", $example_dependency_files_row->dependency_id));*/
-			$query = db_select('xcos_textbook_companion_dependency_files');
+			$query = db_select('textbook_companion_dependency_files');
 			$query->fields('xcos_textbook_companion_dependency_files');
 			$query->condition('id', $example_dependency_files_row->dependency_id);
 			$query->range(0, 1);
@@ -60,21 +60,21 @@ function xcos_textbook_companion_download_full_chapter()
 	} //$example_row = $example_q->fetchObject()
 	/* unapproved examples */
 	/*$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE chapter_id = %d AND approval_status = 0", $chapter_id);*/
-	$query = db_select('xcos_textbook_companion_example');
-	$query->fields('xcos_textbook_companion_example');
+	$query = db_select('textbook_companion_example');
+	$query->fields('textbook_companion_example');
 	$query->condition('chapter_id', $chapter_id);
-	$query->condition('approval_status', 0);
+	$query->condition('xcos_approval_status', 0);
 	$example_q = $query->execute();
 	while ($example_row = $example_q->fetchObject())
 	{
 		$EX_PATH = 'EX' . $example_row->number . '/';
 		/*$example_files_q = db_query("SELECT * FROM {xcos_textbook_companion_example_files} WHERE example_id = %d", $example_row->id);*/
-		$query = db_select('xcos_textbook_companion_example_files');
-		$query->fields('xcos_textbook_companion_example_files');
+		$query = db_select('textbook_companion_example_files');
+		$query->fields('textbook_companion_example_files');
 		$query->condition('example_id', $example_row->id);
 		$$example_files_q = $query->execute();
 		/*$example_dependency_files_q = db_query("SELECT * FROM {xcos_textbook_companion_example_dependency} WHERE example_id = %d", $example_row->id);*/
-		$query = db_select('xcos_textbook_companion_example_dependency');
+		$query = db_select('textbook_companion_example_dependency');
 		$query->fields('xcos_textbook_companion_example_dependency');
 		$query->condition('example_id', $example_row->id);
 		$example_dependency_files_q = $query->execute();
@@ -86,7 +86,7 @@ function xcos_textbook_companion_download_full_chapter()
 		while ($example_dependency_files_row = $example_dependency_files_q->fetchObject())
 		{
 			/*$dependency_file_data = db_fetch_object(db_query("SELECT * FROM {xcos_textbook_companion_dependency_files} WHERE id = %d LIMIT 1", $example_dependency_files_row->dependency_id));*/
-			$query = db_select('xcos_textbook_companion_dependency_files');
+			$query = db_select('textbook_companion_dependency_files');
 			$query->fields('xcos_textbook_companion_dependency_files');
 			$query->condition('id', $example_dependency_files_row->dependency_id);
 			$query->range(0, 1);
@@ -126,7 +126,7 @@ function xcos_textbook_companion_download_full_book()
 	$APPROVE_PATH = 'APPROVED/';
 	$PENDING_PATH = 'PENDING/';
 	/* get example data */
-	$book_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE id = :book_id", array(
+	$book_q = db_query("SELECT * FROM textbook_companion_preference WHERE id = :book_id", array(
 		':book_id' => $book_id
 	));
 	$book_data = $book_q->fetchObject();
@@ -137,66 +137,40 @@ function xcos_textbook_companion_download_full_book()
 	$zip = new ZipArchive;
 	$zip->open($zip_filename, ZipArchive::CREATE);
 	/* approved examples */
-	$chapter_q = db_query("SELECT * FROM {xcos_textbook_companion_chapter} WHERE preference_id = :book_id", array(
+	$chapter_q = db_query("SELECT * FROM textbook_companion_chapter WHERE preference_id = :book_id", array(
 		':book_id' => $book_id
 	));
 	while ($chapter_row = $chapter_q->fetchObject())
 	{
 		$CH_PATH = 'CH' . $chapter_row->number . '/';
-		$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE chapter_id = :chapter_id AND approval_status = 1", array(
+		$example_q = db_query("SELECT * FROM textbook_companion_example WHERE chapter_id = :chapter_id AND xcos_approval_status = 1", array(
 			':chapter_id' => $chapter_row->id
 		));
 		while ($example_row = $example_q->fetchObject())
 		{
 			$EX_PATH = 'EX' . $example_row->number . '/';
-			$example_files_q = db_query("SELECT * FROM {xcos_textbook_companion_example_files} WHERE example_id = :example_id", array(
-				':example_id' => $example_row->id
-			));
-			$example_dependency_files_q = db_query("SELECT * FROM {xcos_textbook_companion_example_dependency} WHERE example_id = :example_id", array(
+			$example_files_q = db_query("SELECT * FROM textbook_companion_example_files WHERE example_id = :example_id and filename LIKE '%xcos%'", array(
 				':example_id' => $example_row->id
 			));
 			while ($example_files_row = $example_files_q->fetchObject())
 			{
 				$zip->addFile($root_path . $example_files_row->filepath, $BK_PATH . $APPROVE_PATH . $CH_PATH . $EX_PATH . $example_files_row->filename);
 			} //$example_files_row = $example_files_q->fetchObject()
-			/* dependency files */
-			while ($example_dependency_files_row = $example_dependency_files_q->fetchObject())
-			{
-				$dependency_file_data_query = db_query("SELECT * FROM {xcos_textbook_companion_dependency_files} WHERE id = :id LIMIT 1", array(
-					':id' => $example_dependency_files_row->dependency_id
-				));
-				$dependency_file_data = $dependency_file_data_query->fetchObject();
-				if ($dependency_file_data)
-					$zip->addFile($root_path . $dependency_file_data->filepath, $BK_PATH . $APPROVE_PATH . $CH_PATH . $EX_PATH . 'DEPENDENCIES/' . $dependency_file_data->filename);
-			} //$example_dependency_files_row = $example_dependency_files_q->fetchObject()
 		} //$example_row = $example_q->fetchObject()
 		/* unapproved examples */
-		$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE chapter_id = :chapter_id AND approval_status = 0", array(
+		$example_q = db_query("SELECT * FROM textbook_companion_example WHERE chapter_id = :chapter_id AND xcos_approval_status = 0", array(
 			':chapter_id' => $chapter_row->id
 		));
 		while ($example_row = $example_q->fetchObject())
 		{
 			$EX_PATH = 'EX' . $example_row->number . '/';
-			$example_files_q = db_query("SELECT * FROM {xcos_textbook_companion_example_files} WHERE example_id = :id", array(
-				':id' => $example_row->id
-			));
-			$example_dependency_files_q = db_query("SELECT * FROM {xcos_textbook_companion_example_dependency} WHERE example_id = :id", array(
+			$example_files_q = db_query("SELECT * FROM textbook_companion_example_files WHERE example_id = :id", array(
 				':id' => $example_row->id
 			));
 			while ($example_files_row = $example_files_q->fetchObject())
 			{
 				$zip->addFile($root_path . $example_files_row->filepath, $BK_PATH . $PENDING_PATH . $CH_PATH . $EX_PATH . $example_files_row->filename);
 			} //$example_files_row = $example_files_q->fetchObject()
-			/* dependency files */
-			while ($example_dependency_files_row = $example_dependency_files_q->fetchObject())
-			{
-				$dependency_file_data_query = db_query("SELECT * FROM {xcos_textbook_companion_dependency_files} WHERE id = :id LIMIT 1", array(
-					':id' => $example_dependency_files_row->dependency_id
-				));
-				$dependency_file_data = $dependency_file_data_query->fetchObject();
-				if ($dependency_file_data)
-					$zip->addFile($root_path . $dependency_file_data->filepath, $BK_PATH . $PENDING_PATH . $CH_PATH . $EX_PATH . 'DEPENDENCIES/' . $dependency_file_data->filename);
-			} //$example_dependency_files_row = $example_dependency_files_q->fetchObject()
 		} //$example_row = $example_q->fetchObject()
 	} //$chapter_row = $chapter_q->fetchObject()
 	$zip_file_count = $zip->numFiles;

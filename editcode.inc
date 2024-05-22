@@ -10,8 +10,8 @@ function upload_examples_edit_form($form, &$form_state)
 	/* get example details */
 	/*$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE id = %d LIMIT 1", $example_id);
 	$example_data = db_fetch_object($example_q);*/
-	$query = db_select('xcos_textbook_companion_example');
-	$query->fields('xcos_textbook_companion_example');
+	$query = db_select('textbook_companion_example');
+	$query->fields('textbook_companion_example');
 	$query->condition('id', $example_id);
 	$query->range(0, 1);
 	$example_q = $query->execute();
@@ -38,8 +38,8 @@ function upload_examples_edit_form($form, &$form_state)
 	$result3_file = "";
 	$result3_id = 0;
 	/*$example_files_q = db_query("SELECT * FROM {xcos_textbook_companion_example_files} WHERE example_id = %d", $example_id);*/
-	$query = db_select('xcos_textbook_companion_example_files');
-	$query->fields('xcos_textbook_companion_example_files');
+	$query = db_select('textbook_companion_example_files');
+	$query->fields('textbook_companion_example_files');
 	$query->condition('example_id', $example_id);
 	$example_files_q = $query->execute();
 	while ($example_files_data = $example_files_q->fetchObject())
@@ -71,8 +71,8 @@ function upload_examples_edit_form($form, &$form_state)
 	/* get chapter details */
 	/*$chapter_q = db_query("SELECT * FROM {xcos_textbook_companion_chapter} WHERE id = %d", $example_data->chapter_id);
 	$chapter_data = db_fetch_object($chapter_q);*/
-	$query = db_select('xcos_textbook_companion_chapter');
-	$query->fields('xcos_textbook_companion_chapter');
+	$query = db_select('textbook_companion_chapter');
+	$query->fields('textbook_companion_chapter');
 	$query->condition('id', $example_data->chapter_id);
 	$result = $query->execute();
 	$chapter_data = $result->fetchObject();
@@ -85,8 +85,8 @@ function upload_examples_edit_form($form, &$form_state)
 	/* get preference details */
 	/*$preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE id = %d", $chapter_data->preference_id);
 	$preference_data = db_fetch_object($preference_q);*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('id', $chapter_data->preference_id);
 	$result = $query->execute();
 	$preference_data = $result->fetchObject();
@@ -105,8 +105,8 @@ function upload_examples_edit_form($form, &$form_state)
 	/* get proposal details */
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE id = %d", $preference_data->proposal_id);
 	$proposal_data = db_fetch_object($proposal_q);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('id', $preference_data->proposal_id);
 	$result = $query->execute();
 	$proposal_data = $result->fetchObject();
@@ -280,7 +280,7 @@ function upload_examples_edit_form($form, &$form_state)
 	/************ START OF EXISTING DEPENDENCIES **************/
 	$dependency_files = array();
 	/*$dependency_q = db_query("SELECT * FROM {xcos_textbook_companion_example_dependency} WHERE example_id = %d", $example_data->id);*/
-	$query = db_select('xcos_textbook_companion_example_dependency');
+	$query = db_select('textbook_companion_example_dependency');
 	$query->fields('xcos_textbook_companion_example_dependency');
 	$query->condition('example_id', $example_data->id);
 	$dependency_q = $query->execute();
@@ -474,7 +474,7 @@ function _list_of_xcos_book_dependency_files_edit($example_id)
 	global $user;
 	$book_dependency_files = array();
 	$book_dependency_files_class = array();
-	$query = db_select('xcos_textbook_companion_dependency_files', 'tcdp');
+	$query = db_select('textbook_companion_dependency_files', 'tcdp');
 	$query->fields('tcdp');
 	$query->fields('tcp', array(
 		'book',
@@ -498,7 +498,7 @@ function _list_of_xcos_book_dependency_files_edit($example_id)
 		)) . $temp_caption;
 			//$book_dependency_files_class[$book_dependency_files_data->id] = $book_dependency_files_data->preference_id;
 		} //$book_dependency_files_data->caption //$book_dependency_files_data = $book_dependency_files_q->fetchObject()
-	$query = db_select('xcos_textbook_companion_example_dependency');
+	$query = db_select('textbook_companion_example_dependency');
 	$query->fields('xcos_textbook_companion_example_dependency');
 	$query->condition('example_id', $example_id);
 	$book_dep_q = $query->execute();
@@ -597,8 +597,8 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	/* get example details */
 	/*$example_q = db_query("SELECT * FROM {xcos_textbook_companion_example} WHERE id = %d LIMIT 1", $example_id);
 	$example_data = db_fetch_object($example_q);*/
-	$query = db_select('xcos_textbook_companion_example');
-	$query->fields('xcos_textbook_companion_example');
+	$query = db_select('textbook_companion_example');
+	$query->fields('textbook_companion_example');
 	$query->condition('id', $example_id);
 	$query->range(0, 1);
 	$example_q = $query->execute();
@@ -618,8 +618,8 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	/* get chapter details */
 	/*$chapter_q = db_query("SELECT * FROM {xcos_textbook_companion_chapter} WHERE id = %d", $example_data->chapter_id);
 	$chapter_data = db_fetch_object($chapter_q);*/
-	$query = db_select('xcos_textbook_companion_chapter');
-	$query->fields('xcos_textbook_companion_chapter');
+	$query = db_select('textbook_companion_chapter');
+	$query->fields('textbook_companion_chapter');
 	$query->condition('id', $example_data->chapter_id);
 	$result = $query->execute();
 	$chapter_data = $result->fetchObject();
@@ -632,8 +632,8 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	/* get preference details */
 	/*$preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE id = %d", $chapter_data->preference_id);
 	$preference_data = db_fetch_object($preference_q);*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('id', $chapter_data->preference_id);
 	$result = $query->execute();
 	$preference_data = $result->fetchObject();
@@ -652,8 +652,8 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	/* get proposal details */
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE id = %d", $preference_data->proposal_id);
 	$proposal_data = db_fetch_object($proposal_q);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('id', $preference_data->proposal_id);
 	$result = $query->execute();
 	$proposal_data = $result->fetchObject();
@@ -682,7 +682,7 @@ function upload_examples_edit_form_submit($form, &$form_state)
 		mkdir($root_path . $dest_path);
 	/* updating example caption */
 	/*db_query("UPDATE {xcos_textbook_companion_example} SET caption = '%s' WHERE id = %d", $form_state['values']['example_caption'], $example_id);*/
-	$query = db_update('xcos_textbook_companion_example');
+	$query = db_update('textbook_companion_example');
 	$query->fields(array(
 		'caption' => $form_state['values']['example_caption']
 	));
@@ -724,8 +724,8 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	{
 		/*$file_q = db_query("SELECT * FROM  {xcos_textbook_companion_example_files} WHERE id = %d AND example_id = %d", $cur_file_id, $example_data->id);
 		$file_data = db_fetch_object($file_q);*/
-		$query = db_select('xcos_textbook_companion_example_files');
-		$query->fields('xcos_textbook_companion_example_files');
+		$query = db_select('textbook_companion_example_files');
+		$query->fields('textbook_companion_example_files');
 		$query->condition('id', $cur_file_id);
 		$query->condition('example_id', $example_data->id);
 		$result = $query->execute();
@@ -809,8 +809,8 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	{
 		/*$file_q = db_query("SELECT * FROM  {xcos_textbook_companion_example_files} WHERE id = %d AND example_id = %d", $cur_file_id, $example_data->id);
 		$file_data = db_fetch_object($file_q);*/
-		$query = db_select('xcos_textbook_companion_example_files');
-		$query->fields('xcos_textbook_companion_example_files');
+		$query = db_select('textbook_companion_example_files');
+		$query->fields('textbook_companion_example_files');
 		$query->condition('id', $cur_file_id);
 		$query->condition('example_id', $example_data->id);
 		$result = $query->execute();
@@ -886,8 +886,8 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	{
 		/*$file_q = db_query("SELECT * FROM  {xcos_textbook_companion_example_files} WHERE id = %d AND example_id = %d", $cur_file_id, $example_data->id);
 		$file_data = db_fetch_object($file_q);*/
-		$query = db_select('xcos_textbook_companion_example_files');
-		$query->fields('xcos_textbook_companion_example_files');
+		$query = db_select('textbook_companion_example_files');
+		$query->fields('textbook_companion_example_files');
 		$query->condition('id', $cur_file_id);
 		$query->condition('example_id', $example_data->id);
 		$result = $query->execute();
@@ -964,8 +964,8 @@ function upload_examples_edit_form_submit($form, &$form_state)
 	{
 		/*$file_q = db_query("SELECT * FROM  {xcos_textbook_companion_example_files} WHERE id = %d AND example_id = %d", $cur_file_id, $example_data->id);
 		$file_data = db_fetch_object($file_q);*/
-		$query = db_select('xcos_textbook_companion_example_files');
-		$query->fields('xcos_textbook_companion_example_files');
+		$query = db_select('textbook_companion_example_files');
+		$query->fields('textbook_companion_example_files');
 		$query->condition('id', $cur_file_id);
 		$query->condition('example_id', $example_data->id);
 		$result = $query->execute();
@@ -1053,8 +1053,8 @@ function edit_chapter_title_form($form_state)
 	/************************ start approve book details ************************/
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE uid = %d ORDER BY id DESC LIMIT 1", $user->uid);
 	$proposal_data = db_fetch_object($proposal_q);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('uid', $user->uid);
 	$query->orderBy('id', 'DESC');
 	$query->range(0, 1);
@@ -1093,8 +1093,8 @@ function edit_chapter_title_form($form_state)
 	} //$proposal_data->proposal_status != 1 && $proposal_data->proposal_status != 4
 	/*$preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $proposal_data->id);
 	$preference_data = db_fetch_object($preference_q);*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('proposal_id', $proposal_data->id);
 	$query->condition('approval_status', 1);
 	$query->range(0, 1);
@@ -1110,8 +1110,8 @@ function edit_chapter_title_form($form_state)
 	$chapter_id = arg(4);
 	/*$chapter_q = db_query("SELECT * FROM {xcos_textbook_companion_chapter} WHERE id = %d AND preference_id = %d", $chapter_id, $preference_data->id);
 	$chapter_data = db_fetch_object($chapter_q);*/
-	$query = db_select('xcos_textbook_companion_chapter');
-	$query->fields('xcos_textbook_companion_chapter');
+	$query = db_select('textbook_companion_chapter');
+	$query->fields('textbook_companion_chapter');
 	$query->condition('id', $chapter_id);
 	$query->condition('preference_id', $preference_data->id);
 	$result = $query->execute();
@@ -1167,8 +1167,8 @@ function edit_chapter_title_form_submit($form, &$form_state)
 	/************************ start approve book details ************************/
 	/*$proposal_q = db_query("SELECT * FROM {xcos_textbook_companion_proposal} WHERE uid = %d ORDER BY id DESC LIMIT 1", $user->uid);
 	$proposal_data = db_fetch_object($proposal_q);*/
-	$query = db_select('xcos_textbook_companion_proposal');
-	$query->fields('xcos_textbook_companion_proposal');
+	$query = db_select('textbook_companion_proposal');
+	$query->fields('textbook_companion_proposal');
 	$query->condition('uid', $user->uid);
 	$query->orderBy('id', 'DESC');
 	$query->range(0, 1);
@@ -1207,8 +1207,8 @@ function edit_chapter_title_form_submit($form, &$form_state)
 	} //$proposal_data->proposal_status != 1 && $proposal_data->proposal_status != 4
 	/*$preference_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE proposal_id = %d AND approval_status = 1 LIMIT 1", $proposal_data->id);
 	$preference_data = db_fetch_object($preference_q);*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$query->condition('proposal_id', $proposal_data->id);
 	$query->condition('approval_status', 1);
 	$query->range(0, 1);
@@ -1224,8 +1224,8 @@ function edit_chapter_title_form_submit($form, &$form_state)
 	$chapter_id = arg(4);
 	/*$chapter_q = db_query("SELECT * FROM {xcos_textbook_companion_chapter} WHERE id = %d AND preference_id = %d", $chapter_id, $preference_data->id);
 	$chapter_data = db_fetch_object($chapter_q);*/
-	$query = db_select('xcos_textbook_companion_chapter');
-	$query->fields('xcos_textbook_companion_chapter');
+	$query = db_select('textbook_companion_chapter');
+	$query->fields('textbook_companion_chapter');
 	$query->condition('id', $chapter_id);
 	$query->condition('preference_id', $preference_data->id);
 	$result = $query->execute();
@@ -1237,7 +1237,7 @@ function edit_chapter_title_form_submit($form, &$form_state)
 		return;
 	} //!$chapter_data
 	/*db_query("UPDATE {xcos_textbook_companion_chapter} SET name = '%s' WHERE id = %d", $form_state['values']['chapter_title'], $chapter_id);*/
-	$query = db_update('xcos_textbook_companion_chapter');
+	$query = db_update('textbook_companion_chapter');
 	$query->fields(array(
 		'name' => $form_state['values']['chapter_title']
 	));
@@ -1255,8 +1255,8 @@ function _list_of_book_titles()
 		'0' => 'Please select...'
 	);
 	/*$book_titles_q = db_query("SELECT * FROM {xcos_textbook_companion_preference} WHERE approval_status = 1 OR approval_status = 3 ORDER BY book ASC");*/
-	$query = db_select('xcos_textbook_companion_preference');
-	$query->fields('xcos_textbook_companion_preference');
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
 	$or = db_or();
 	$or->condition('approval_status', 1);
 	$or->condition('approval_status', 3);
@@ -1274,7 +1274,7 @@ function _list_of_book_titles()
 	$book_dependency_files = array();
 	$book_dependency_files_class = array();
 	/*$book_dependency_files_q = db_query("SELECT * FROM {xcos_textbook_companion_dependency_files} ORDER BY filename ASC");*/
-	/*$query = db_select('xcos_textbook_companion_dependency_files', 'tcdp');
+	/*$query = db_select('textbook_companion_dependency_files', 'tcdp');
 	$query->fields('tcdp');
 	$query->fields('tcp', array(
 		'book',
